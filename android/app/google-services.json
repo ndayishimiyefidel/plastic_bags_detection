@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "259416750507",
+    "firebase_url": "https://ulrick-plastic-detection-default-rtdb.firebaseio.com",
+    "project_id": "ulrick-plastic-detection",
+    "storage_bucket": "ulrick-plastic-detection.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259416750507:android:0833a31ff1dfa96a6dbaee",
+        "android_client_info": {
+          "package_name": "com.example.plastic_bags_detection"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259416750507-o9gl8uc2gpo1novb0lo43dl8j8hsbuva.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl3Y84y40UuxlDSBLUyzRDeZAM2oJnpSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259416750507-o9gl8uc2gpo1novb0lo43dl8j8hsbuva.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "259416750507-1l44f8b6u0sncd8j9ppgmquu6uhhbdas.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.plasticBagsDetection"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

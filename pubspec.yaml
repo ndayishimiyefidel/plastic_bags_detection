@@ -1,0 +1,50 @@
+name: plastic_bags_detection
+description: A new Flutter project.
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.0 <3.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  flutter_vector_icons: ^1.0.0
+  firebase_core: ^2.14.0
+  firebase_database: any
+  path_provider: ^2.0.5
+  fluttertoast: ^8.1.2
+  http: ^0.13.0
+  tflite: ^1.1.2
+  cached_network_image: ^3.2.2
+  cloud_firestore: ^4.4.4
+  url_launcher: ^6.1.9
+  share_plus: any
+  form_builder_file_picker: ^2.3.0
+  firebase_auth: ^4.0.2
+  shared_preferences: ^2.0.15
+  image_network: ^2.5.2
+  random_string: ^2.0.1
+  image_picker: ^0.8.6
+  firebase_storage: ^11.0.6
+  splash_screen_view: ^3.0.0
+  flutter_svg:
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+
+flutter:
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/
+    - assets/images/
+    - assets/icons/
