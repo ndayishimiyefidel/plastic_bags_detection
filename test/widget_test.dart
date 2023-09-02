@@ -8,7 +8,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:plastic_bags_detection/main.dart';
 import 'package:plastic_bags_detection/screen/SplashScreen.dart';
 
 void main() {

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class DatabaseService {
 //create account
@@ -37,7 +38,9 @@ class DatabaseService {
         .collection("Documents")
         .add(fileData)
         .catchError((e) {
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     });
   }
 

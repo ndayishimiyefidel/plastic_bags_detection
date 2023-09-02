@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,11 +8,11 @@ import '../resources/user_state_methods.dart';
 import '../utils/constants.dart';
 import '../widgets/MainDrawer.dart';
 import 'Welcome/home.dart';
+
 class HomeScreen extends StatefulWidget {
   final String currentuserid;
 
-  const HomeScreen({Key? key, required this.currentuserid})
-      : super(key: key);
+  const HomeScreen({Key? key, required this.currentuserid}) : super(key: key);
 
   @override
   _HomeScreenState createState() =>
@@ -35,18 +34,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       phone = preferences.getString("phone")!;
     });
   }
+
   @override
   void initState() {
     super.initState();
     getCurrUserData();
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       UserStateMethods().setUserState(
-          userId: currentuserid,
-          userState: UserState.Online,);
+        userId: currentuserid,
+        userState: UserState.Online,
+      );
     });
 
     WidgetsBinding.instance.addObserver(this);
-
   }
 
   @override
@@ -63,28 +63,32 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         currentuserid != null
             ? UserStateMethods().setUserState(
                 userId: currentuserid,
-                userState: UserState.Online,)
+                userState: UserState.Online,
+              )
             : print("Resumed State");
         break;
       case AppLifecycleState.inactive:
         currentuserid != null
             ? UserStateMethods().setUserState(
                 userId: currentuserid,
-                userState: UserState.Offline,)
+                userState: UserState.Offline,
+              )
             : print("Inactive State");
         break;
       case AppLifecycleState.paused:
         currentuserid != null
             ? UserStateMethods().setUserState(
                 userId: currentuserid,
-                userState: UserState.Waiting,)
+                userState: UserState.Waiting,
+              )
             : print("Paused State");
         break;
       case AppLifecycleState.detached:
         currentuserid != null
             ? UserStateMethods().setUserState(
                 userId: currentuserid,
-                userState: UserState.Offline,)
+                userState: UserState.Offline,
+              )
             : print("Detached State");
         break;
     }
@@ -97,7 +101,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MyStatefulWidget(name: name,),
+      body: MyStatefulWidget(
+        name: name,
+      ),
     );
   }
 }
@@ -105,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 class MyStatefulWidget extends StatefulWidget {
   final String name;
   MyStatefulWidget({
-    Key? key, required this.name,
+    Key? key,
+    required this.name,
   }) : super(key: key);
 
   @override
@@ -114,7 +121,6 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +155,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         elevation: 0.0,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -168,7 +174,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               ),
               const SizedBox(height: 25),
               const Text(
-                'PLASTIC BAGS DETECTION',
+                'WASTE DETECTION IN WATER BODIES',
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   fontSize: 18,
@@ -181,7 +187,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               const ListTile(
                 leading: Icon(Icons.camera_alt),
                 title: Text('Capture Images'),
-                subtitle: Text('Use the camera to capture images for detection'),
+                subtitle:
+                    Text('Use the camera to capture images for detection'),
               ),
               const ListTile(
                 leading: Icon(Icons.image),
@@ -191,18 +198,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               const ListTile(
                 leading: Icon(Icons.cloud_upload),
                 title: Text('Store Results'),
-                subtitle: Text('Save detection results in the cloud for analysis'),
+                subtitle:
+                    Text('Save detection results in the cloud for analysis'),
               ),
               const ListTile(
                 leading: Icon(Icons.search),
                 title: Text('Detect Plastic Bags'),
-                subtitle: Text('Analyze images to identify the presence of plastic bags'),
+                subtitle: Text(
+                    'Analyze images to identify the presence of plastic bags'),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   // Handle button press to navigate to the next screen
-                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const Home();
                   }));
                 },
@@ -218,6 +227,5 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   void initState() {
     super.initState();
-
   }
 }

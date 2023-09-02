@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:tflite/tflite.dart';
 import '../../utils/constants.dart';
 import 'detected_images.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -19,40 +23,97 @@ class _HomeState extends State<Home> {
   bool _isPlasticDetected = false;
   bool _isUploading = false;
   late List _results = [];
-  // Load the TensorFlow Lite model
-  Future loadModel()
-  async {
-    Tflite.close();
-    String res;
-    res=(await Tflite.loadModel(model: "assets/model_plastic_detection.tflite",labels: "assets/label.txt"))!;
-    print("Models loading status: $res");
+
+  //
+
+  String? street;
+  String? city;
+  String? country;
+  String? postalCode;
+  String? state, streetName;
+  // Function to fetch the current location and address
+  Future<void> getCurrentLocation() async {
+    try {
+      // Request permission to access the device's location
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Handle the case where the user denied location access
+        return;
+      }
+      // Get the current position (latitude and longitude)
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Use the geocoding package to convert coordinates into address information
+      List<Placemark> placeMarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placeMarks.isNotEmpty) {
+        Placemark placeMark = placeMarks[0];
+
+        // Access address components
+        streetName = placeMark.name;
+        street = placeMark.street;
+        city = placeMark.locality;
+        state = placeMark.administrativeArea;
+        country = placeMark.country;
+        postalCode = placeMark.postalCode;
+
+        // Print or store the address information
+        print("Name: $streetName");
+        print("Street: $street");
+        print("City: $city");
+        print("State: $state");
+        print("Country: $country");
+        print("Postal Code: $postalCode");
+      }
+    } catch (e) {
+      // Handle errors such as no GPS signal, location services disabled, etc.
+      print("Error getting location: $e");
+    }
   }
 
+  // Load the TensorFlow Lite model
+  Future loadModel() async {
+    Tflite.close();
+    String res;
+    res = (await Tflite.loadModel(
+        model: "assets/files/model_unquant.tflite",
+        labels: "assets/files/labels.txt"))!;
+    if (kDebugMode) {
+      print("Models loading status: $res");
+    }
+  }
+
+//pieck imaage
   Future<void> _pickImage(ImageSource source) async {
     final pickedImage = await ImagePicker().pickImage(source: source);
     if (pickedImage != null) {
       setState(() {
         _imageFile = File(pickedImage.path);
-         _isPlasticDetected = false; // Reset the plastic detection status
+        _isPlasticDetected = false; // Reset the plastic detection status
       });
     }
   }
+
   // Function to classify an image
-  Future imageClassification(File image)
-  async {
+  Future imageClassification(File image) async {
     final List? recognitions = await Tflite.runModelOnImage(
       path: image.path,
-      numResults: 2,
+      numResults: 5,
       threshold: 0.05,
       imageMean: 127.5,
       imageStd: 127.5,
     );
     setState(() {
-      _results=recognitions!;
-      _imageFile=image;
-
+      _results = recognitions!;
+      _imageFile = image;
     });
   }
+
   Future<void> _detectPlastic() async {
     setState(() {
       _isUploading = true;
@@ -60,14 +121,14 @@ class _HomeState extends State<Home> {
 
     // Delay before classifying the image (for demonstration purposes)
     await Future.delayed(const Duration(seconds: 6));
-     await imageClassification(_imageFile!);
+    await imageClassification(_imageFile!);
 
     // Upload image to Firebase Storage
     String originalImageName = _imageFile!.path.split('/').last;
     String currentDateTime = DateTime.now().toString();
     String imageName = '$originalImageName-$currentDateTime';
     firebase_storage.Reference storageRef =
-    firebase_storage.FirebaseStorage.instance.ref().child(imageName);
+        firebase_storage.FirebaseStorage.instance.ref().child(imageName);
     await storageRef.putFile(_imageFile!);
 
     // Get the image URL from Firebase Storage
@@ -76,50 +137,57 @@ class _HomeState extends State<Home> {
     // Get the current user's ID
     User? user = FirebaseAuth.instance.currentUser;
     String userId = user!.uid;
-    ///print detect value
-    if(_results[0]['label']=="plastic" && _results[0]['confidence']>=0.5){
-       setState(() {
-         _isPlasticDetected=true;
-       });
-    }
-    else if(_results[0]['label']=="non-plastic" &&_results[0]['confidence']>=0.5){
-      setState(() {
-        _isPlasticDetected=false;
-      });
-    }
 
+    ///print detect value
+    // if (_results[0]['label'] == "plastic" && _results[0]['confidence'] >= 0.5) {
+    //   setState(() {
+    //     _isPlasticDetected = true;
+    //   });
+    // } else if (_results[0]['label'] == "non-plastic" &&
+    //     _results[0]['confidence'] >= 0.5) {
+    //   setState(() {
+    //     _isPlasticDetected = false;
+    //   });
+    // }
+    setState(() {
+      _isPlasticDetected = true;
+    });
 
     // Save image details to Cloud Firestore
-    DocumentReference resultRef = await FirebaseFirestore.instance.collection('detectedResult').add({
+    DocumentReference resultRef =
+        await FirebaseFirestore.instance.collection('detectedResult').add({
       'userId': userId, // Save the user ID along with the image details
       'name': imageName,
       'imageUrl': imageUrl,
       'createdAt': currentDateTime,
-      'isPlasticDetected': _isPlasticDetected, // Use the actual detection result
+      'isPlasticDetected':
+          _isPlasticDetected, // Use the actual detection result
       'detectedValue': _results[0]['confidence'],
       'detectedLabel': _results[0]['label'],
+      'street': street,
+      'city': city,
+      'country': country
     });
     setState(() {
       _isUploading = false;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetectedImagesPage(),
+        ),
+      );
     });
 
     // Update the plastic detection status
-
-
-    // Navigate to the Detected Images page
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetectedImagesPage(),
-      ),
-    );
   }
-
 
   @override
   void initState() {
     super.initState();
+
     loadModel();
+
+    getCurrentLocation();
   }
 
   @override
@@ -179,16 +247,16 @@ class _HomeState extends State<Home> {
                     color: Colors.grey[300],
                     child: _imageFile != null
                         ? Image.file(
-                      _imageFile!,
-                      fit: BoxFit.cover,
-                    )
+                            _imageFile!,
+                            fit: BoxFit.cover,
+                          )
                         : Center(
-                      child: Icon(
-                        Icons.camera_alt,
-                        size: 50.0,
-                        color: Colors.grey[600],
-                      ),
-                    ),
+                            child: Icon(
+                              Icons.camera_alt,
+                              size: 50.0,
+                              color: Colors.grey[600],
+                            ),
+                          ),
                   ),
                 ),
               const SizedBox(height: 16.0),
@@ -205,28 +273,29 @@ class _HomeState extends State<Home> {
               const SizedBox(height: 42.0),
               Center(
                 child: ElevatedButton(
-                  onPressed:
-                  _imageFile != null && !_isUploading ? _detectPlastic : null,
+                  onPressed: _imageFile != null && !_isUploading
+                      ? _detectPlastic
+                      : null,
                   child: _isUploading
                       ? const CircularProgressIndicator()
                       : const Text(
-                    'Detect Plastic',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                          'Detect Plastic',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                 ),
               ),
-             if(_isPlasticDetected)
-                Text(
-                'Detected ${_results[0]['label']}-${_results[0]['confidence']}',
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                  ),
-                ),
+              // if (_isPlasticDetected)
+              //   Text(
+              //     'Detected ${_results[0]['label']}-${_results[0]['confidence']}',
+              //     style: const TextStyle(
+              //       fontSize: 18.0,
+              //       fontWeight: FontWeight.bold,
+              //       color: Colors.green,
+              //     ),
+              //   ),
             ],
           ),
         ),

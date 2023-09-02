@@ -57,17 +57,22 @@ class _BodyState extends State<Body> {
             Padding(
               padding: const EdgeInsets.only(left: 15, right: 15),
               child: Text(
-                "WELCOME TO PLASTIC BAGS DETECTION ",
-                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Theme.of(context).primaryColor),
+                "WELCOME TO WASTE DETECTION IN WATER BODIES",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center,
-
               ),
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
                 "This system is designed to detect whether an image contains plastic bags or not. You can either choose an image from your device's gallery or capture a new image using the camera. The system will then analyze the image using a convolutional neural network (CNN) model trained on a dataset of images containing plastic bags and images without plastic bags.",
-                style: TextStyle(fontWeight: FontWeight.normal,fontSize: 14,color: Colors.black45),
+                style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14,
+                    color: Colors.black45),
                 textAlign: TextAlign.start,
               ),
             ),
@@ -78,7 +83,7 @@ class _BodyState extends State<Body> {
             // ),
             Image.asset(
               'assets/plastic.jpg', // Replace with your own image asset
-                height: size.height * 0.45,
+              height: size.height * 0.45,
               width: size.width * 0.8,
               fit: BoxFit.fill,
             ),
@@ -90,8 +95,8 @@ class _BodyState extends State<Body> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5),
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryColor),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: kPrimaryColor),
                   onPressed: () {
                     loginNavigator();
                   },

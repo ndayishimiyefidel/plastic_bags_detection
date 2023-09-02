@@ -5,12 +5,12 @@ import 'package:flutter/scheduler.dart';
 import 'package:plastic_bags_detection/screen/HomeScreen.dart';
 import 'package:plastic_bags_detection/screen/Welcome/detected_images.dart';
 import 'package:plastic_bags_detection/screen/accounts/AccountSettingsPage.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../resources/user_state_methods.dart';
 import '../screen/Welcome/about_us.dart';
 import '../screen/Welcome/home.dart';
 import '../utils/constants.dart';
+
 class MainDrawer extends StatefulWidget {
   @override
   _MainDrawerState createState() => _MainDrawerState();
@@ -33,12 +33,17 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) =>  HomeScreen(currentuserid:FirebaseAuth.instance.currentUser!.uid ),
+                    builder: (BuildContext context) => HomeScreen(
+                        currentuserid: FirebaseAuth.instance.currentUser!.uid),
                   ),
                 );
               });
             },
-            leading: const Icon(Icons.home,size: 30,weight: 100,),
+            leading: const Icon(
+              Icons.home,
+              size: 30,
+              weight: 100,
+            ),
             contentPadding: const EdgeInsets.only(
               left: 70,
               top: 5,
@@ -57,12 +62,16 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) =>  DetectedImagesPage(),
+                    builder: (BuildContext context) => DetectedImagesPage(),
                   ),
                 );
               });
             },
-            leading: const Icon(Icons.insert_photo,size: 30,weight: 100,),
+            leading: const Icon(
+              Icons.insert_photo,
+              size: 30,
+              weight: 100,
+            ),
             contentPadding: const EdgeInsets.only(
               left: 70,
               top: 5,
@@ -81,12 +90,16 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) =>  const Home(),
+                    builder: (BuildContext context) => const Home(),
                   ),
                 );
               });
             },
-            leading: const Icon(Icons.insert_photo_outlined,size: 30,weight: 100,),
+            leading: const Icon(
+              Icons.insert_photo_outlined,
+              size: 30,
+              weight: 100,
+            ),
             contentPadding: const EdgeInsets.only(
               left: 70,
               top: 5,
@@ -105,12 +118,16 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) =>  const AboutUsScreen(),
+                    builder: (BuildContext context) => const AboutUsScreen(),
                   ),
                 );
               });
             },
-            leading: const Icon(Icons.info_outline_rounded,size: 30,weight: 100,),
+            leading: const Icon(
+              Icons.info_outline_rounded,
+              size: 30,
+              weight: 100,
+            ),
             contentPadding: const EdgeInsets.only(
               left: 70,
               top: 5,
@@ -129,12 +146,16 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) =>  UserSettings(),
+                    builder: (BuildContext context) => UserSettings(),
                   ),
                 );
               });
             },
-            leading: const Icon(Icons.personal_injury_outlined,size: 30,weight: 100,),
+            leading: const Icon(
+              Icons.personal_injury_outlined,
+              size: 30,
+              weight: 100,
+            ),
             contentPadding: const EdgeInsets.only(
               left: 70,
               top: 5,

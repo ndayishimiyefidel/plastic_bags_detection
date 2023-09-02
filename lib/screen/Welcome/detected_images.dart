@@ -65,12 +65,18 @@ class DetectedImagesPage extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.all(16.0),
             children: snapshot.data!.docs.map((document) {
-              Map<String, dynamic> data = (document.data() as Map<String, dynamic>);
+              Map<String, dynamic> data =
+                  (document.data() as Map<String, dynamic>);
               String imageUrl = data['imageUrl'];
               String imageName = data['name'];
+              String label = data['detectedLabel'];
               bool isPlasticDetected = data['isPlasticDetected'];
-              double confidence=data['detectedValue'];
-              String confidencePercentage = (confidence * 100).toStringAsFixed(2);
+              double confidence = data['detectedValue'];
+              String? city = data['city'];
+              String? country = data['country'];
+              String? street = data['street'];
+              String confidencePercentage =
+                  (confidence * 100).toStringAsFixed(2);
 
               return GestureDetector(
                 onTap: () {
@@ -100,7 +106,8 @@ class DetectedImagesPage extends StatelessWidget {
                             child: Image.network(
                               imageUrl,
                               fit: BoxFit.cover,
-                              width: double.infinity, // Set the image width to the width of the card
+                              width: double
+                                  .infinity, // Set the image width to the width of the card
                               height: 150.0,
                             ),
                           ),
@@ -134,33 +141,72 @@ class DetectedImagesPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w300,
-                                color: isPlasticDetected ? Colors.green : Colors.red,
+                                color: isPlasticDetected
+                                    ? Colors.green
+                                    : Colors.red,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 8.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "Conclusion:",
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              isPlasticDetected ? 'Plastic found' : 'No Plastic found',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w300,
-                                color: isPlasticDetected ? Colors.green : Colors.red,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          "Class: $label",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
+                        country != null
+                            ? Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  country != null
+                                      ? Expanded(
+                                          child: Text(
+                                            "Detected in  $country",
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w300,
+                                              color: isPlasticDetected
+                                                  ? Colors.green
+                                                  : Colors.red,
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                  city != null
+                                      ? Expanded(
+                                          child: Text(
+                                            "in $city",
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w300,
+                                              color: isPlasticDetected
+                                                  ? Colors.green
+                                                  : Colors.red,
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                  street != null
+                                      ? Expanded(
+                                          child: Text(
+                                            "at Street $street",
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w300,
+                                              color: isPlasticDetected
+                                                  ? Colors.green
+                                                  : Colors.red,
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                ],
+                              )
+                            : const SizedBox(),
                       ],
                     ),
                   ),
@@ -188,7 +234,10 @@ class ImageDetailsPage extends StatelessWidget {
   });
   Future<void> _deleteImage(BuildContext context) async {
     try {
-      await FirebaseFirestore.instance.collection('detectedResult').doc(documentId).delete();
+      await FirebaseFirestore.instance
+          .collection('detectedResult')
+          .doc(documentId)
+          .delete();
       Navigator.pop(context); // Go back to the previous page
     } catch (e) {
       // Handle the error if deletion fails
@@ -196,7 +245,10 @@ class ImageDetailsPage extends StatelessWidget {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Error',style: TextStyle(color: Colors.red),),
+            title: const Text(
+              'Error',
+              style: TextStyle(color: Colors.red),
+            ),
             content: const Text('Failed to delete image.'),
             actions: [
               TextButton(
@@ -234,18 +286,23 @@ class ImageDetailsPage extends StatelessWidget {
                     fontWeight: FontWeight.normal,
                   ),
                 ),
-                const SizedBox(height: 8.0),
-                Text(
-                  isPlasticDetected ? 'Plastic Detected' : 'No Plastic Detected',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: isPlasticDetected ? Colors.green : Colors.red,
-                  ),
-                ),
+                // const SizedBox(height: 8.0),
+                // Text(
+                //   isPlasticDetected
+                //       ? 'Plastic Detected'
+                //       : 'No Plastic Detected',
+                //   style: TextStyle(
+                //     fontSize: 20.0,
+                //     color: isPlasticDetected ? Colors.green : Colors.red,
+                //   ),
+                // ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () => _deleteImage(context),
-                  child: const Text('Delete',style: TextStyle(color: Colors.red),),
+                  child: const Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.red),
+                  ),
                 ),
               ],
             ),

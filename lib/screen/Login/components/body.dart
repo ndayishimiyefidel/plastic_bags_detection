@@ -10,6 +10,7 @@ import '../../../widgets/ProgressWidget.dart';
 import '../../HomeScreen.dart';
 import '../../Signup/components/background.dart';
 import '../../Signup/signup_screen.dart';
+
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
@@ -29,7 +30,6 @@ class _SignInState extends State<SignIn> {
 
   String? deviceId;
   bool checkedValue = false;
-
 
   @override
   void initState() {
@@ -59,13 +59,15 @@ class _SignInState extends State<SignIn> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-               Text(
-                "WELCOME TO PLASTIC BAGS DETECTION",
-                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Theme.of(context).primaryColor),
+              Text(
+                "WELCOME TO WASTE DETECTION IN WATER BODIES",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: size.height * 0.03),
-
               TextFieldContainer(
                 child: TextFormField(
                   controller: emailEditingController,
@@ -176,7 +178,9 @@ class _SignInState extends State<SignIn> {
                       "Forgot password?",
                       style: TextStyle(color: kPrimaryColor),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     GestureDetector(
                       onTap: () {
                         // Navigator.push(
@@ -309,22 +313,21 @@ class _SignInState extends State<SignIn> {
             .doc(user!.uid)
             .get()
             .then((datasnapshot) async {
-            await preferences.setString("uid", datasnapshot.data()!["uid"]);
-            await preferences.setString("name", datasnapshot.data()!["name"]);
-            await preferences.setString(
-                "photo", datasnapshot.data()!["photoUrl"]);
-            await preferences.setString("email", datasnapshot.data()!["email"]);
-            await preferences.setString("phone", datasnapshot.data()!["phone"]);
+          await preferences.setString("uid", datasnapshot.data()!["uid"]);
+          await preferences.setString("name", datasnapshot.data()!["name"]);
+          await preferences.setString(
+              "photo", datasnapshot.data()!["photoUrl"]);
+          await preferences.setString("email", datasnapshot.data()!["email"]);
+          await preferences.setString("phone", datasnapshot.data()!["phone"]);
 
-            setState(() {
-              isloading = false;
-            });
-            Route route = MaterialPageRoute(
-                builder: (c) => HomeScreen(
-                      currentuserid: user!.uid,
-                    ));
-            Navigator.push(context, route);
-
+          setState(() {
+            isloading = false;
+          });
+          Route route = MaterialPageRoute(
+              builder: (c) => HomeScreen(
+                    currentuserid: user!.uid,
+                  ));
+          Navigator.push(context, route);
         });
       } else {
         setState(() {

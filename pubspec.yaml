@@ -13,17 +13,12 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  flutter_vector_icons: ^1.0.0
   firebase_core: ^2.14.0
   firebase_database: any
-  path_provider: ^2.0.5
   fluttertoast: ^8.1.2
-  http: ^0.13.0
   tflite: ^1.1.2
   cached_network_image: ^3.2.2
   cloud_firestore: ^4.4.4
-  url_launcher: ^6.1.9
-  share_plus: any
   form_builder_file_picker: ^2.3.0
   firebase_auth: ^4.0.2
   shared_preferences: ^2.0.15
@@ -33,6 +28,8 @@ dependencies:
   firebase_storage: ^11.0.6
   splash_screen_view: ^3.0.0
   flutter_svg:
+  geolocator: ^10.0.0
+  geocoding: ^2.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -48,3 +45,4 @@ flutter:
     - assets/
     - assets/images/
     - assets/icons/
+    - assets/files/
