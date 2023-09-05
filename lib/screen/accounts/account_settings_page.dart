@@ -4,16 +4,15 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:plastic_bags_detection/widgets/main_drawer.dart';
+import 'package:plastic_bags_detection/widgets/progress_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../resources/user_state_methods.dart';
 import '../../utils/constants.dart';
-import '../../widgets/MainDrawer.dart';
-import '../../widgets/ProgressWidget.dart';
-
 class UserSettings extends StatelessWidget {
   UserSettings({super.key});
 
@@ -23,7 +22,7 @@ class UserSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Drawer(
+      drawer: const Drawer(
         elevation: 0,
         child: MainDrawer(),
       ),
@@ -145,7 +144,9 @@ class SettingsScreenState extends State<SettingsScreen> {
     String mFileName = id;
     Reference reference = FirebaseStorage.instance.ref().child(mFileName);
     UploadTask uploadTask = reference.putFile(imageFileAvatar!);
-    print(uploadTask);
+    if (kDebugMode) {
+      print(uploadTask);
+    }
     taskSnapshot = await (await uploadTask).ref.getDownloadURL().then(
         (newImageDownloadUrl) {
       photoUrl = newImageDownloadUrl;
@@ -265,12 +266,12 @@ class SettingsScreenState extends State<SettingsScreen> {
                                   ),
                             GestureDetector(
                               onTap: getImage,
-                              child: Padding(
-                                  padding: const EdgeInsets.only(
+                              child: const Padding(
+                                  padding: EdgeInsets.only(
                                       top: 150.0, right: 120.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const <Widget>[
+                                    children: <Widget>[
                                       CircleAvatar(
                                         backgroundColor: Colors.red,
                                         radius: 25.0,
@@ -310,11 +311,11 @@ class SettingsScreenState extends State<SettingsScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   mainAxisSize: MainAxisSize.max,
                                   children: <Widget>[
-                                    Column(
+                                    const Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
-                                      children: const <Widget>[
+                                      children: <Widget>[
                                         Text(
                                           'Personal Information',
                                           style: TextStyle(
@@ -332,8 +333,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                                     )
                                   ],
                                 )),
-                            Padding(
-                                padding: const EdgeInsets.only(
+                            const Padding(
+                                padding: EdgeInsets.only(
                                     left: 25.0, right: 25.0, top: 25.0),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.max,
@@ -342,7 +343,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
-                                      children: const <Widget>[
+                                      children: <Widget>[
                                         Text(
                                           'Name',
                                           style: TextStyle(
@@ -377,8 +378,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                                   ],
                                 )),
                             //Telephone
-                            Padding(
-                                padding: const EdgeInsets.only(
+                            const Padding(
+                                padding: EdgeInsets.only(
                                     left: 25.0, right: 25.0, top: 25.0),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.max,
@@ -387,7 +388,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
-                                      children: const <Widget>[
+                                      children: <Widget>[
                                         Text(
                                           'Telephone',
                                           style: TextStyle(
@@ -421,8 +422,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                                 )),
 
                             //Email field
-                            Padding(
-                                padding: const EdgeInsets.only(
+                            const Padding(
+                                padding: EdgeInsets.only(
                                     left: 25.0, right: 25.0, top: 25.0),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.max,
@@ -431,7 +432,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
-                                      children: const <Widget>[
+                                      children: <Widget>[
                                         Text(
                                           'Email ID',
                                           style: TextStyle(
