@@ -44,7 +44,7 @@ android {
     }
     signingConfigs {
     release {
-        storeFile file('../keystore/detection-key.keystore') // Path to your keystore file
+        storeFile file('../../keystore/detection-key.keystore') // Path to your keystore file
         storePassword 'passphrase' // Keystore password
         keyAlias 'detection-key-alias' // Key alias
         keyPassword 'passphrase' // Key password

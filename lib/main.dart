@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:plastic_bags_detection/screen/SplashScreen.dart';
 import 'package:plastic_bags_detection/utils/constants.dart';
 import 'package:plastic_bags_detection/utils/utils.dart';
 
 import 'firebase_options.dart';
+import 'screen/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

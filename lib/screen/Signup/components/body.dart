@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../components/text_field_container.dart';
 import '../../../utils/constants.dart';
-import '../../../widgets/ProgressWidget.dart';
+import '../../../widgets/progress_widget.dart';
 import '../../Login/login_screen.dart';
 import '../../Signup/components/background.dart';
 
@@ -13,7 +13,7 @@ class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
   @override
-  _SignUpState createState() => _SignUpState();
+  State createState() => _SignUpState();
 }
 
 class _SignUpState extends State<SignUp> {
@@ -105,8 +105,10 @@ class _SignUpState extends State<SignUp> {
         setState(() {
           isloading = false;
         });
-        Route route = MaterialPageRoute(builder: (c) => LoginScreen());
+        Route route = MaterialPageRoute(builder: (c) => const LoginScreen());
+        setState(() {
         Navigator.push(context, route);
+        });
       } else {
         setState(() {
           isloading = false;
@@ -193,7 +195,7 @@ class _SignUpState extends State<SignUp> {
                         return 'This field is mandatory';
                       }
                       String p =
-                          "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+";
+                          "[a-zA-Z0-9+._%-+]{1,256}\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+";
                       RegExp regExp = new RegExp(p);
 
                       if (regExp.hasMatch(emailValue)) {
@@ -331,7 +333,7 @@ class _SignUpState extends State<SignUp> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return LoginScreen();
+                              return const LoginScreen();
                             },
                           ),
                         );

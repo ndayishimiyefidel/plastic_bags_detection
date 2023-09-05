@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 import '../utils/utils.dart';
 
@@ -12,8 +13,10 @@ class AuthService {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-      print(e.toString());
-      Utils.ShowSnackBar(e.message);
+      if (kDebugMode) {
+        print(e.toString());
+      }
+      Utils.showSnackBar(e.message);
     }
   }
 
@@ -22,12 +25,18 @@ class AuthService {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-      print(e.toString());
-      Utils.ShowSnackBar(e.message);
+      if (kDebugMode) {
+        print(e.toString());
+      }
+      Utils.showSnackBar(e.message);
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        if (kDebugMode) {
+          print('No user found for that email.');
+        }
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        if (kDebugMode) {
+          print('Wrong password provided for that user.');
+        }
       }
     }
   }
@@ -37,7 +46,7 @@ class AuthService {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       print(e.toString());
-      Utils.ShowSnackBar(e.message);
+      Utils.showSnackBar(e.message);
     }
   }
 

@@ -63,16 +63,30 @@ class _HomeState extends State<Home> {
         postalCode = placeMark.postalCode;
 
         // Print or store the address information
-        print("Name: $streetName");
-        print("Street: $street");
-        print("City: $city");
-        print("State: $state");
-        print("Country: $country");
-        print("Postal Code: $postalCode");
+        if (kDebugMode) {
+          print("Name: $streetName");
+        }
+        if (kDebugMode) {
+          print("Street: $street");
+        }
+        if (kDebugMode) {
+          print("City: $city");
+        }
+        if (kDebugMode) {
+          print("State: $state");
+        }
+        if (kDebugMode) {
+          print("Country: $country");
+        }
+        if (kDebugMode) {
+          print("Postal Code: $postalCode");
+        }
       }
     } catch (e) {
       // Handle errors such as no GPS signal, location services disabled, etc.
-      print("Error getting location: $e");
+      if (kDebugMode) {
+        print("Error getting location: $e");
+      }
     }
   }
 
@@ -138,17 +152,6 @@ class _HomeState extends State<Home> {
     User? user = FirebaseAuth.instance.currentUser;
     String userId = user!.uid;
 
-    ///print detect value
-    // if (_results[0]['label'] == "plastic" && _results[0]['confidence'] >= 0.5) {
-    //   setState(() {
-    //     _isPlasticDetected = true;
-    //   });
-    // } else if (_results[0]['label'] == "non-plastic" &&
-    //     _results[0]['confidence'] >= 0.5) {
-    //   setState(() {
-    //     _isPlasticDetected = false;
-    //   });
-    // }
     setState(() {
       _isPlasticDetected = true;
     });

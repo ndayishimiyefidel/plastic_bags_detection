@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:plastic_bags_detection/widgets/main_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../enume/user_state.dart';
 import '../resources/user_state_methods.dart';
 import '../utils/constants.dart';
-import '../widgets/MainDrawer.dart';
 import 'Welcome/home.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -126,7 +126,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Drawer(
+      drawer: const Drawer(
         elevation: 0,
         child: MainDrawer(),
       ),

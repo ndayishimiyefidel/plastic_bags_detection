@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../components/text_field_container.dart';
 import '../../../utils/constants.dart';
-import '../../../widgets/ProgressWidget.dart';
-import '../../HomeScreen.dart';
+import '../../../widgets/progress_widget.dart';
+import '../../home_screen.dart';
 import '../../Signup/components/background.dart';
 import '../../Signup/signup_screen.dart';
 
@@ -15,7 +15,7 @@ class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
   @override
-  _SignInState createState() => _SignInState();
+State createState() => _SignInState();
 }
 
 class _SignInState extends State<SignIn> {
@@ -43,7 +43,7 @@ class _SignInState extends State<SignIn> {
       context,
       MaterialPageRoute(
         builder: (context) {
-          return SignUpScreen();
+          return const SignUpScreen();
         },
       ),
     );
@@ -327,7 +327,9 @@ class _SignInState extends State<SignIn> {
               builder: (c) => HomeScreen(
                     currentuserid: user!.uid,
                   ));
-          Navigator.push(context, route);
+        setState(() {
+            Navigator.push(context, route);
+         });
         });
       } else {
         setState(() {
