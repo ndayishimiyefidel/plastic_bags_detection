@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../components/text_field_container.dart';
 import '../../../utils/constants.dart';
 import '../../../widgets/ProgressWidget.dart';
-import '../../HomeScreen.dart';
 import '../../Login/login_screen.dart';
 import '../../Signup/components/background.dart';
 
