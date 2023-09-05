@@ -4,7 +4,7 @@ import '../resources/user_state_methods.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final menuenabled;
+  final bool? menuenabled;
   final bool notificationenabled;
   final Function ontap;
 
@@ -81,6 +81,5 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => const Size.fromHeight(50);
 }

@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:plastic_bags_detection/screen/Welcome/detected_images.dart';
+import 'package:plastic_bags_detection/screen/accounts/account_settings_page.dart';
 
 import '../resources/user_state_methods.dart';
 import '../screen/Welcome/about_us.dart';
 import '../screen/Welcome/home.dart';
-import '../screen/accounts/account_settings_page.dart';
 import '../screen/home_screen.dart';
 import '../utils/constants.dart';
 

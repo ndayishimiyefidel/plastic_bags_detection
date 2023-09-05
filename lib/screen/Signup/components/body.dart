@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -151,7 +152,9 @@ class _SignUpState extends State<SignUp> {
                     textInputAction: TextInputAction.next,
                     onChanged: (val) {
                       name = val;
-                      print(name);
+                      if (kDebugMode) {
+                        print(name);
+                      }
                     },
                     validator: (nameValue) {
                       if (nameValue!.isEmpty) {
@@ -188,7 +191,9 @@ class _SignUpState extends State<SignUp> {
                     textInputAction: TextInputAction.next,
                     onChanged: (val) {
                       emailAddress = val;
-                      print(emailAddress);
+                      if (kDebugMode) {
+                        print(emailAddress);
+                      }
                     },
                     validator: (emailValue) {
                       if (emailValue!.isEmpty) {
@@ -196,7 +201,7 @@ class _SignUpState extends State<SignUp> {
                       }
                       String p =
                           "[a-zA-Z0-9+._%-+]{1,256}\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+";
-                      RegExp regExp = new RegExp(p);
+                      RegExp regExp = RegExp(p);
 
                       if (regExp.hasMatch(emailValue)) {
                         // So, the email is valid
@@ -223,7 +228,9 @@ class _SignUpState extends State<SignUp> {
                     textInputAction: TextInputAction.next,
                     onChanged: (val) {
                       phoneNumber = val;
-                      print(phoneNumber);
+                      if (kDebugMode) {
+                        print(phoneNumber);
+                      }
                     },
                     validator: (phoneValue) {
                       if (phoneValue!.isEmpty) {
@@ -333,7 +340,7 @@ class _SignUpState extends State<SignUp> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return const LoginScreen();
+                              return LoginScreen();
                             },
                           ),
                         );

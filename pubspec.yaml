@@ -14,7 +14,6 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   firebase_core: ^2.14.0
-  firebase_database: any
   fluttertoast: ^8.1.2
   tflite: ^1.1.2
   cached_network_image: ^3.2.2
@@ -23,11 +22,9 @@ dependencies:
   firebase_auth: ^4.0.2
   shared_preferences: ^2.0.15
   image_network: ^2.5.2
-  random_string: ^2.0.1
   image_picker: ^0.8.6
   firebase_storage: ^11.0.6
   splash_screen_view: ^3.0.0
-  flutter_svg:
   geolocator: ^10.0.0
   geocoding: ^2.1.0
   flutter_launcher_icons: ^0.11.0
@@ -42,7 +39,6 @@ flutter:
   uses-material-design: true
 
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
     - assets/images/
@@ -53,5 +49,4 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icons/icon.png" # Path to your source icon image
-
+  image_path: "assets/icons/icon.png"
