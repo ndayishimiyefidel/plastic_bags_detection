@@ -30,6 +30,7 @@ dependencies:
   flutter_svg:
   geolocator: ^10.0.0
   geocoding: ^2.1.0
+  flutter_launcher_icons: ^0.11.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -40,9 +41,17 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
     - assets/images/
     - assets/icons/
     - assets/files/
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/icon.png" # Path to your source icon image
+
