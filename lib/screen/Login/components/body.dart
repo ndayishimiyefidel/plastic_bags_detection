@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../../../components/text_field_container.dart';
 import '../../../utils/constants.dart';
 import '../../../widgets/progress_widget.dart';
@@ -266,6 +266,35 @@ class _SignInState extends State<SignIn> {
                   )
                 ],
               ),
+                SizedBox(
+                height: size.height * 0.05,
+              ),
+              GestureDetector(
+                onTap: () {
+                const String url = "https://www.freeprivacypolicy.com/live/65f8d8db-ed42-468d-aff3-927528aa213f";
+                _launchURL(url);
+                },
+                child: const Text(
+                  "Privacy Policy",
+                  style: TextStyle(fontSize: 16, color: Colors.blueAccent),
+                ),
+              ),
+              SizedBox(
+                height: size.height * 0.03,
+              ),
+              GestureDetector(
+                onTap: () {
+                  const String url = "https://www.privacypolicyonline.com/live.php?token=0tibucdqOozphMqyKc81zlyXqehytTdq";
+                _launchURL(url);
+                },
+                child: const Text(
+                  "Terms and condition of use",
+                  style: TextStyle(fontSize: 16, color: Colors.blueAccent),
+                ),
+              ),
+              SizedBox(
+                height: size.height * 0.01,
+              ),
               SizedBox(
                 height: size.height * 0.06,
               ),
@@ -274,17 +303,24 @@ class _SignInState extends State<SignIn> {
         ),
       ),
     );
+  
   }
+
+
+  _launchURL(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
 
   void loginUser() async {
     if (_formkey.currentState!.validate()) {
       setState(() {
         isloading = true;
       });
-      // if(checkedValue){
-      //   box1.put('email', emailEditingController.value.text);
-      //   box1.put('pass', passwordEditingController.value.text);
-      // }
       preferences = await SharedPreferences.getInstance();
 
       var user = FirebaseAuth.instance.currentUser;

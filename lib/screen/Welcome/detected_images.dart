@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../utils/constants.dart';
 
 class DetectedImagesPage extends StatelessWidget {
+  const DetectedImagesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Get the current user's ID
@@ -219,26 +221,28 @@ class DetectedImagesPage extends StatelessWidget {
     );
   }
 }
-
 class ImageDetailsPage extends StatelessWidget {
   final String imageUrl;
   final String imageName;
   final bool isPlasticDetected;
   final String documentId;
 
-  ImageDetailsPage({
+  const ImageDetailsPage({
+    Key? key,
     required this.imageUrl,
     required this.imageName,
     required this.isPlasticDetected,
     required this.documentId,
-  });
+  }) : super(key: key);
+
   Future<void> _deleteImage(BuildContext context) async {
+    final scaffoldContext = context;
     try {
       await FirebaseFirestore.instance
           .collection('detectedResult')
           .doc(documentId)
           .delete();
-      Navigator.pop(context); // Go back to the previous page
+      Navigator.pop(scaffoldContext); // Go back to the previous page
     } catch (e) {
       // Handle the error if deletion fails
       showDialog(
@@ -255,8 +259,7 @@ class ImageDetailsPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('OK'),
-              ),
+                child: const Text('OK'),  ),
             ],
           );
         },
@@ -277,7 +280,30 @@ class ImageDetailsPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.network(imageUrl),
+                GestureDetector(
+                  onTap: () {
+                    // Open a zoomable view of the image
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ZoomableImage(imageUrl: imageUrl),
+                      ),
+                    );
+                  },
+                  child: Hero(
+                    tag: imageUrl, // Unique tag for the Hero widget
+                    child: InteractiveViewer(
+                      boundaryMargin: const EdgeInsets.all(20.0), // Adjust this margin as needed
+                      minScale: 1.0,
+                      maxScale: 4.0, // Adjust the maximum zoom level as needed
+                      scaleEnabled: true,
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16.0),
                 Text(
                   imageName,
@@ -286,16 +312,6 @@ class ImageDetailsPage extends StatelessWidget {
                     fontWeight: FontWeight.normal,
                   ),
                 ),
-                // const SizedBox(height: 8.0),
-                // Text(
-                //   isPlasticDetected
-                //       ? 'Plastic Detected'
-                //       : 'No Plastic Detected',
-                //   style: TextStyle(
-                //     fontSize: 20.0,
-                //     color: isPlasticDetected ? Colors.green : Colors.red,
-                //   ),
-                // ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () => _deleteImage(context),
@@ -312,3 +328,42 @@ class ImageDetailsPage extends StatelessWidget {
     );
   }
 }
+
+class ZoomableImage extends StatelessWidget {
+  final String imageUrl;
+
+  const ZoomableImage({
+    Key? key,
+    required this.imageUrl,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Zoomable Image'),
+      ),
+      body: Center(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Hero(
+            tag: imageUrl, // Use the same tag as in ImageDetailsPage
+            child: InteractiveViewer(
+              boundaryMargin: EdgeInsets.all(20.0), // Adjust this margin as needed
+              minScale: 1.0,
+              maxScale: 4.0, // Adjust the maximum zoom level as needed
+              scaleEnabled: true,
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+

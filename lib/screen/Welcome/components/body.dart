@@ -81,7 +81,7 @@ class _BodyState extends State<Body> {
             //   height: size.height * 0.45,
             // ),
             Image.asset(
-              'assets/plastic.jpg', // Replace with your own image asset
+              'assets/back1.jpeg', // Replace with your own image asset
               height: size.height * 0.45,
               width: size.width * 0.8,
               fit: BoxFit.fill,

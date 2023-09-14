@@ -24,8 +24,6 @@ class _HomeState extends State<Home> {
   bool _isUploading = false;
   late List _results = [];
 
-  //
-
   String? street;
   String? city;
   String? country;
@@ -61,26 +59,6 @@ class _HomeState extends State<Home> {
         state = placeMark.administrativeArea;
         country = placeMark.country;
         postalCode = placeMark.postalCode;
-
-        // Print or store the address information
-        if (kDebugMode) {
-          print("Name: $streetName");
-        }
-        if (kDebugMode) {
-          print("Street: $street");
-        }
-        if (kDebugMode) {
-          print("City: $city");
-        }
-        if (kDebugMode) {
-          print("State: $state");
-        }
-        if (kDebugMode) {
-          print("Country: $country");
-        }
-        if (kDebugMode) {
-          print("Postal Code: $postalCode");
-        }
       }
     } catch (e) {
       // Handle errors such as no GPS signal, location services disabled, etc.
@@ -184,13 +162,44 @@ class _HomeState extends State<Home> {
     // Update the plastic detection status
   }
 
+  Future<void> showLocationDisclosureDialog() async {
+    // Show the custom location disclosure dialog
+    bool? userAccepted = await showDialog<bool?>(
+      context: context,
+      builder: (BuildContext context) {
+        return LocationDisclosureDialog(
+          onPermissionChoice: (accepted) {
+            Navigator.of(context)
+                .pop(accepted); // Close the dialog and pass the choice
+          },
+        );
+      },
+    );
+
+    if (userAccepted == true) {
+      // User accepted location permission, call getCurrentLocation
+      await getCurrentLocation();
+    } else {
+      // User closed the dialog without making a choice
+      // Handle this case as needed
+
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Location permission was denied or not granted.'),
+          ),
+        );
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
     loadModel();
-
-    getCurrentLocation();
+    Future.delayed(Duration.zero, () {
+      showLocationDisclosureDialog();
+    });
   }
 
   @override
@@ -290,19 +299,42 @@ class _HomeState extends State<Home> {
                         ),
                 ),
               ),
-              // if (_isPlasticDetected)
-              //   Text(
-              //     'Detected ${_results[0]['label']}-${_results[0]['confidence']}',
-              //     style: const TextStyle(
-              //       fontSize: 18.0,
-              //       fontWeight: FontWeight.bold,
-              //       color: Colors.green,
-              //     ),
-              //   ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class LocationDisclosureDialog extends StatelessWidget {
+  final Function(bool) onPermissionChoice;
+
+  const LocationDisclosureDialog({super.key, required this.onPermissionChoice});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Location Access Required'),
+      content: const Text(
+        'Waste Detection App needs access to your location to know where the waste located that can used in reporting for place with high concentrations of waste.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            // Navigator.of(context).pop(); // Close the dialog
+            onPermissionChoice(true); // User accepted permission
+          },
+          child: const Text('Accept'),
+        ),
+        TextButton(
+          onPressed: () {
+            // Navigator.of(context).pop(); // Close the dialog
+            onPermissionChoice(false); // User denied permission
+          },
+          child: const Text('Deny'),
+        ),
+      ],
     );
   }
 }

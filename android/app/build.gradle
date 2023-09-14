@@ -35,7 +35,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.plastic_bags_detection"
+        applicationId "com.devopsengineer.plastic_bags_detection"
         minSdkVersion flutter.minSdkVersion=19
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -67,6 +67,7 @@ android {
 
 dependencies {
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.google.android.gms:play-services-ads:22.4.0'
 }
 
 flutter {
