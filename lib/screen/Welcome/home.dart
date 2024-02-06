@@ -7,6 +7,8 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:plastic_bags_detection/widgets/interestial_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite/tflite.dart';
 import '../../utils/constants.dart';
 import 'detected_images.dart';
@@ -24,11 +26,31 @@ class _HomeState extends State<Home> {
   bool _isUploading = false;
   late List _results = [];
 
+  late SharedPreferences preferences;
+
+  bool isAlreadyLoggedIn = false;
+  String? currentuserid;
+  String? userRole, name, email, phone;
+
+  void getCurrentUser() async {
+    preferences = await SharedPreferences.getInstance();
+    setState(() {
+      currentuserid = preferences.getString("uid");
+      userRole = preferences.getString("userRole");
+      name = preferences.getString("name");
+      email = preferences.getString("email");
+      phone = preferences.getString("phone");
+    });
+  }
+
   String? street;
   String? city;
   String? country;
   String? postalCode;
   String? state, streetName;
+  double? latitudeValue;
+  double? longitudeValue;
+  InterstitialAdManager interstitialAdManager = InterstitialAdManager();
   // Function to fetch the current location and address
   Future<void> getCurrentLocation() async {
     try {
@@ -50,6 +72,8 @@ class _HomeState extends State<Home> {
       );
 
       if (placeMarks.isNotEmpty) {
+        latitudeValue = position.latitude;
+        longitudeValue = position.longitude;
         Placemark placeMark = placeMarks[0];
 
         // Access address components
@@ -73,8 +97,8 @@ class _HomeState extends State<Home> {
     Tflite.close();
     String res;
     res = (await Tflite.loadModel(
-        model: "assets/files/model_unquant.tflite",
-        labels: "assets/files/labels.txt"))!;
+        model: "assets/files/model_waste_detection.tflite",
+        labels: "assets/files/newlabels.txt"))!;
     if (kDebugMode) {
       print("Models loading status: $res");
     }
@@ -95,7 +119,7 @@ class _HomeState extends State<Home> {
   Future imageClassification(File image) async {
     final List? recognitions = await Tflite.runModelOnImage(
       path: image.path,
-      numResults: 5,
+      numResults: 6,
       threshold: 0.05,
       imageMean: 127.5,
       imageStd: 127.5,
@@ -110,6 +134,9 @@ class _HomeState extends State<Home> {
     setState(() {
       _isUploading = true;
     });
+    if (interstitialAdManager.isInterstitialAdLoaded()) {
+      interstitialAdManager.showInterstitialAd();
+    }
 
     // Delay before classifying the image (for demonstration purposes)
     await Future.delayed(const Duration(seconds: 6));
@@ -147,14 +174,21 @@ class _HomeState extends State<Home> {
       'detectedLabel': _results[0]['label'],
       'street': street,
       'city': city,
-      'country': country
+      'country': country,
+      "userName": name,
+      "email": email,
+      "phone": phone,
+      "latitude": latitudeValue,
+      "longitude": longitudeValue
     });
     setState(() {
       _isUploading = false;
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DetectedImagesPage(),
+          builder: (context) => DetectedImagesPage(
+            userRole: userRole.toString(),
+          ),
         ),
       );
     });
@@ -196,7 +230,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    getCurrentUser();
     loadModel();
+    interstitialAdManager.loadInterstitialAd(); //load inter
     Future.delayed(Duration.zero, () {
       showLocationDisclosureDialog();
     });

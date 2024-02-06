@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:plastic_bags_detection/widgets/banner_widget.dart';
+import 'package:plastic_bags_detection/widgets/interestial_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../components/text_field_container.dart';
@@ -15,7 +17,7 @@ class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
   @override
-State createState() => _SignInState();
+  State createState() => _SignInState();
 }
 
 class _SignInState extends State<SignIn> {
@@ -27,6 +29,7 @@ class _SignInState extends State<SignIn> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late bool _passwordVisible;
   bool isloading = false;
+  InterstitialAdManager interstitialAdManager = InterstitialAdManager();
 
   String? deviceId;
   bool checkedValue = false;
@@ -35,7 +38,10 @@ class _SignInState extends State<SignIn> {
   void initState() {
     super.initState();
     _passwordVisible = false;
-    //save email and [
+    interstitialAdManager.loadInterstitialAd();
+    if (interstitialAdManager.isInterstitialAdLoaded()) {
+      interstitialAdManager.startInterstitialTimer(2);
+    }
   }
 
   Future<void> signupNavigator() async {
@@ -60,7 +66,7 @@ class _SignInState extends State<SignIn> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                "WELCOME TO WASTE DETECTION IN WATER BODIES",
+                "WELCOME TO WASTE DETECTION IN LAKE KIVU",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -216,6 +222,10 @@ class _SignInState extends State<SignIn> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: kPrimaryColor),
                     onPressed: () {
+                      if (interstitialAdManager.isInterstitialAdLoaded()) {
+                        interstitialAdManager.showInterstitialAd();
+                        loginUser();
+                      }
                       loginUser();
                     },
                     child: const Text(
@@ -266,13 +276,14 @@ class _SignInState extends State<SignIn> {
                   )
                 ],
               ),
-                SizedBox(
+              SizedBox(
                 height: size.height * 0.05,
               ),
               GestureDetector(
                 onTap: () {
-                const String url = "https://www.freeprivacypolicy.com/live/65f8d8db-ed42-468d-aff3-927528aa213f";
-                _launchURL(url);
+                  const String url =
+                      "https://www.freeprivacypolicy.com/live/65f8d8db-ed42-468d-aff3-927528aa213f";
+                  _launchURL(url);
                 },
                 child: const Text(
                   "Privacy Policy",
@@ -284,28 +295,26 @@ class _SignInState extends State<SignIn> {
               ),
               GestureDetector(
                 onTap: () {
-                  const String url = "https://www.privacypolicyonline.com/live.php?token=0tibucdqOozphMqyKc81zlyXqehytTdq";
-                _launchURL(url);
+                  const String url =
+                      "https://www.privacypolicyonline.com/live.php?token=0tibucdqOozphMqyKc81zlyXqehytTdq";
+                  _launchURL(url);
                 },
                 child: const Text(
                   "Terms and condition of use",
                   style: TextStyle(fontSize: 16, color: Colors.blueAccent),
                 ),
               ),
+             
               SizedBox(
-                height: size.height * 0.01,
+                height: size.height * 0.1,
               ),
-              SizedBox(
-                height: size.height * 0.06,
-              ),
+             const AdBannerWidget(),
             ],
           ),
         ),
       ),
     );
-  
   }
-
 
   _launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
@@ -314,7 +323,6 @@ class _SignInState extends State<SignIn> {
       throw 'Could not launch $url';
     }
   }
-
 
   void loginUser() async {
     if (_formkey.currentState!.validate()) {
@@ -355,6 +363,7 @@ class _SignInState extends State<SignIn> {
               "photo", datasnapshot.data()!["photoUrl"]);
           await preferences.setString("email", datasnapshot.data()!["email"]);
           await preferences.setString("phone", datasnapshot.data()!["phone"]);
+          await preferences.setString("userRole", datasnapshot.data()!["userRole"]);
 
           setState(() {
             isloading = false;
@@ -362,10 +371,11 @@ class _SignInState extends State<SignIn> {
           Route route = MaterialPageRoute(
               builder: (c) => HomeScreen(
                     currentuserid: user!.uid,
+                    userRole:datasnapshot.data()!["userRole"],
                   ));
-        setState(() {
+          setState(() {
             Navigator.push(context, route);
-         });
+          });
         });
       } else {
         setState(() {

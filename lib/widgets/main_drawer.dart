@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:plastic_bags_detection/screen/Welcome/detected_images.dart';
 import 'package:plastic_bags_detection/screen/accounts/account_settings_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../resources/user_state_methods.dart';
 import '../screen/Welcome/about_us.dart';
@@ -20,7 +21,24 @@ class MainDrawer extends StatefulWidget {
 
 class _MainDrawerState extends State<MainDrawer> {
   FirebaseAuth auth = FirebaseAuth.instance;
+ String? currentuserid;
+  String? userRole;
+  late SharedPreferences preferences;
 
+  @override
+  void initState() {
+    super.initState();
+    navigateuser();
+  }
+
+  void navigateuser() async {
+    preferences = await SharedPreferences.getInstance();
+   setState(() {
+      currentuserid = preferences.getString("uid");
+    userRole = preferences.getString("userRole");
+   });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,7 +54,9 @@ class _MainDrawerState extends State<MainDrawer> {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => HomeScreen(
-                        currentuserid: FirebaseAuth.instance.currentUser!.uid),
+                        currentuserid: FirebaseAuth.instance.currentUser!.uid,
+                        userRole: userRole.toString(),
+                        ),
                   ),
                 );
               });
@@ -64,7 +84,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => DetectedImagesPage(),
+                    builder: (BuildContext context) => DetectedImagesPage(userRole: userRole.toString(),),
                   ),
                 );
               });

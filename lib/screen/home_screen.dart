@@ -1,7 +1,11 @@
+// ignore_for_file: unnecessary_null_comparison, avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:plastic_bags_detection/widgets/banner_widget.dart';
 import 'package:plastic_bags_detection/widgets/main_drawer.dart';
+import 'package:plastic_bags_detection/widgets/reward_video_ad.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../enume/user_state.dart';
@@ -11,11 +15,13 @@ import 'Welcome/home.dart';
 
 class HomeScreen extends StatefulWidget {
   final String currentuserid;
+  final String userRole;
 
-  const HomeScreen({Key? key, required this.currentuserid}) : super(key: key);
+  const HomeScreen({Key? key, required this.currentuserid, required this.userRole}) : super(key: key);
 
   @override
-  _HomeScreenState createState() =>
+  State createState() =>
+      // ignore: no_logic_in_create_state
       _HomeScreenState(currentuserid: currentuserid);
 }
 
@@ -24,6 +30,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   String name = "";
   String email = "";
   String phone = "";
+  String userRole="";
+
+  
   late SharedPreferences preferences;
 
   getCurrUserData() async {
@@ -32,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       name = preferences.getString("name")!;
       email = preferences.getString("email")!;
       phone = preferences.getString("phone")!;
+      userRole=widget.userRole.toString();
     });
   }
 
@@ -103,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return Scaffold(
       body: MyStatefulWidget(
         name: name,
+        userRole: userRole,
       ),
     );
   }
@@ -110,17 +121,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
 class MyStatefulWidget extends StatefulWidget {
   final String name;
-  MyStatefulWidget({
+  final String userRole;
+  const MyStatefulWidget({
     Key? key,
-    required this.name,
+    required this.name, required this.userRole,
   }) : super(key: key);
 
   @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+ State createState() => _MyStatefulWidgetState();
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -159,13 +172,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(
-                'You are welcome, ${widget.name}',
+            Text(
+                'You are welcome, ${widget.name} to ${widget.userRole}',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+               const AdBannerWidget(),
               const SizedBox(height: 60),
               Image.asset(
                 'assets/plastic.jpg', // Replace with your own image asset
@@ -174,7 +188,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               ),
               const SizedBox(height: 25),
               const Text(
-                'WASTE DETECTION IN WATER BODIES',
+                'WASTE DETECTION IN LAKE KIVU',
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   fontSize: 18,
@@ -211,11 +225,21 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               ElevatedButton(
                 onPressed: () {
                   // Handle button press to navigate to the next screen
+                  if(rewardVideoAd.isRewardVideoAdLoaded()){
+                    rewardVideoAd.showRewardAd();
+                     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const Home();
+                  }));
+                  }
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const Home();
                   }));
                 },
                 child: const Text('GET STARTED'),
+              ),
+             const AdBannerWidget(),
+               const SizedBox(
+                height: 10,
               ),
             ],
           ),
@@ -223,9 +247,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
     );
   }
+   RewardVideoAd rewardVideoAd= RewardVideoAd();
 
   @override
   void initState() {
     super.initState();
+    rewardVideoAd.loadRewardAd();
   }
 }

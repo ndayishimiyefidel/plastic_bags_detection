@@ -1,18 +1,132 @@
+// ignore_for_file: unnecessary_null_comparison
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:plastic_bags_detection/widgets/banner_widget.dart';
+import 'package:plastic_bags_detection/widgets/interestial_ads.dart';
+import 'package:plastic_bags_detection/widgets/reward_video_ad.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/constants.dart';
 
-class DetectedImagesPage extends StatelessWidget {
-  const DetectedImagesPage({super.key});
+class DetectedImagesPage extends StatefulWidget {
+  final String userRole;
+
+  const DetectedImagesPage({Key? key, required this.userRole}) : super(key: key);
+
+  @override
+ State createState() => _DetectedImagesPageState();
+}
+
+class _DetectedImagesPageState extends State<DetectedImagesPage> {
+  late User user;
+  late String userId;
+  late RewardVideoAd rewardVideoAd;
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser!;
+    userId = user.uid;
+    rewardVideoAd = RewardVideoAd();
+  }
+
+Widget buildLabelWidget(String label) {
+  switch (label) {
+    case "plastics":
+      return Column(
+        children: [
+          const SizedBox(height: 8.0),
+          Text(
+            "This is : $label",
+            style: const TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+            ),
+          ),
+        ],
+      );
+    case "person":
+      return Column(
+        children: [
+          const SizedBox(height: 8.0),
+          Text(
+            "This  $label,not a plastic",
+            style: const TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+        ],
+      );
+    case "other":
+      return const Column(
+        children: [
+        SizedBox(height: 8.0),
+          Text(
+            "This is unclassfied objects",
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+        ],
+      );
+    case "underwater garbage":
+      return Column(
+        children: [
+          const SizedBox(height: 8.0),
+          Text(
+            "This is $label, something floating on water",
+            style: const TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.orange,
+            ),
+          ),
+        ],
+      );
+    case "water":
+      return Column(
+        children: [
+          const SizedBox(height: 8.0),
+          Text(
+            "This is $label, not plastics",
+            style: const TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.teal,
+            ),
+          ),
+        ]
+      );
+case "trees on water":
+      return Column(
+        children: [
+          const SizedBox(height: 8.0),
+          Text(
+            "This is : $label, no plastics",
+            style: const TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
+          ),
+        ]
+      );
+    default:
+      return const SizedBox.shrink(); // Hide the widget for unknown labels
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
-    // Get the current user's ID
-    User? user = FirebaseAuth.instance.currentUser;
-    String userId = user!.uid;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -27,7 +141,6 @@ class DetectedImagesPage extends StatelessWidget {
         leading: IconButton(
           color: Colors.white,
           onPressed: () {
-            // _scaffoldKey.currentState!.openDrawer();
             Navigator.pop(context);
           },
           icon: const Icon(
@@ -40,9 +153,12 @@ class DetectedImagesPage extends StatelessWidget {
         elevation: 0.0,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
+        stream: widget.userRole!="Admin"? FirebaseFirestore.instance
             .collection('detectedResult')
             .where('userId', isEqualTo: userId)
+            .orderBy('createdAt', descending: true)
+            .snapshots():FirebaseFirestore.instance
+            .collection('detectedResult')
             .orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -76,13 +192,38 @@ class DetectedImagesPage extends StatelessWidget {
               double confidence = data['detectedValue'];
               String? city = data['city'];
               String? country = data['country'];
-              String? street = data['street'];
+              String? name = data['userName'];
+              String? email = data['email'];
+              String? phone = data['phone'];
               String confidencePercentage =
                   (confidence * 100).toStringAsFixed(2);
+          double? latitude = data['latitude'];
+          double? longitude = data['longitude'];
+          String realCity='';
+          if(city!=null && city.isNotEmpty && city!=""){
+            realCity="in $city";
+          }
+
+           bool hasLocation = latitude != null && longitude != null;
 
               return GestureDetector(
                 onTap: () {
-                  // Navigate to the image details page
+                  rewardVideoAd.loadRewardAd();
+
+                  if (rewardVideoAd.isRewardVideoAdLoaded()) {
+                    rewardVideoAd.showRewardAd();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ImageDetailsPage(
+                          imageUrl: imageUrl,
+                          imageName: imageName,
+                          isPlasticDetected: isPlasticDetected,
+                          documentId: document.id,
+                        ),
+                      ),
+                    );
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -90,7 +231,7 @@ class DetectedImagesPage extends StatelessWidget {
                         imageUrl: imageUrl,
                         imageName: imageName,
                         isPlasticDetected: isPlasticDetected,
-                        documentId: document.id, // Pass the document ID
+                        documentId: document.id,
                       ),
                     ),
                   );
@@ -103,13 +244,39 @@ class DetectedImagesPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          "Names: $name",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                          const SizedBox(height: 8.0),
+                        Text(
+                          "Telephone: $phone",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          "Email: $email",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
                         GestureDetector(
                           child: InteractiveViewer(
                             child: Image.network(
                               imageUrl,
                               fit: BoxFit.cover,
-                              width: double
-                                  .infinity, // Set the image width to the width of the card
+                              width: double.infinity,
                               height: 150.0,
                             ),
                           ),
@@ -117,7 +284,7 @@ class DetectedImagesPage extends StatelessWidget {
                             // Handle long press event if needed
                           },
                         ),
-                        const SizedBox(height: 16.0),
+                        const SizedBox(height: 8.0),
                         Text(
                           imageName,
                           style: const TextStyle(
@@ -150,65 +317,49 @@ class DetectedImagesPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          "Class: $label",
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
+                        buildLabelWidget(label),
+
                         country != null
-                            ? Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  country != null
-                                      ? Expanded(
-                                          child: Text(
-                                            "Detected in  $country",
-                                            style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w300,
-                                              color: isPlasticDetected
-                                                  ? Colors.green
-                                                  : Colors.red,
-                                            ),
-                                          ),
-                                        )
-                                      : const SizedBox(),
-                                  city != null
-                                      ? Expanded(
-                                          child: Text(
-                                            "in $city",
-                                            style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w300,
-                                              color: isPlasticDetected
-                                                  ? Colors.green
-                                                  : Colors.red,
-                                            ),
-                                          ),
-                                        )
-                                      : const SizedBox(),
-                                  street != null
-                                      ? Expanded(
-                                          child: Text(
-                                            "at Street $street",
-                                            style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w300,
-                                              color: isPlasticDetected
-                                                  ? Colors.green
-                                                  : Colors.red,
-                                            ),
-                                          ),
-                                        )
-                                      : const SizedBox(),
-                                ],
-                              )
-                            : const SizedBox(),
+                            ? Text(
+                              "Detected at  $country $realCity",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w300,
+                                color: isPlasticDetected
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            ):const SizedBox(),
+                             if (hasLocation) // Check if latitude and longitude exist
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+        GestureDetector(
+          onTap: () {
+          openLocationOnMap(latitude, longitude);
+          },
+          child: const Text(
+            "To view location map",
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.w300,
+              color: Colors.grey
+            ),
+          ),
+        ),
+        const SizedBox(width: 10,),
+          GestureDetector(
+            onTap: () {
+              openLocationOnMap(latitude, longitude);
+            },
+            child: const Icon(
+              Icons.location_on, // Add your preferred location icon
+              color: Colors.blue,
+              size: 30.0,
+            ),
+          ),
+        ],
+      ),
                       ],
                     ),
                   ),
@@ -220,8 +371,19 @@ class DetectedImagesPage extends StatelessWidget {
       ),
     );
   }
+  void openLocationOnMap(double latitude, double longitude) async {
+  final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+
+  if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url));
+  } else {
+    throw 'Could not open the map with the provided coordinates: $latitude, $longitude';
+  }
 }
-class ImageDetailsPage extends StatelessWidget {
+}
+
+
+class ImageDetailsPage extends StatefulWidget {
   final String imageUrl;
   final String imageName;
   final bool isPlasticDetected;
@@ -235,41 +397,81 @@ class ImageDetailsPage extends StatelessWidget {
     required this.documentId,
   }) : super(key: key);
 
+  @override
+  State createState() => _ImageDetailsPageState();
+}
+
+class _ImageDetailsPageState extends State<ImageDetailsPage> {
+  bool _isDeleting = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  InterstitialAdManager interstitialAdManager = InterstitialAdManager();
+
+  @override
+  void initState() {
+    super.initState();
+    interstitialAdManager.loadInterstitialAd(); //load inter
+  }
+
   Future<void> _deleteImage(BuildContext context) async {
-    final scaffoldContext = context;
     try {
+      setState(() {
+        _isDeleting = true;
+      });
+
+
       await FirebaseFirestore.instance
           .collection('detectedResult')
-          .doc(documentId)
+          .doc(widget.documentId)
           .delete();
-      Navigator.pop(scaffoldContext); // Go back to the previous page
+      setState(() {
+        // Go back to the previous page
+        Navigator.pop(context);
+        // Show a success message using a SnackBar
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Image deleted successfully'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      });
     } catch (e) {
       // Handle the error if deletion fails
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text(
-              'Error',
-              style: TextStyle(color: Colors.red),
-            ),
-            content: const Text('Failed to delete image.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),  ),
-            ],
-          );
-        },
-      );
+      setState(() {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text(
+                'Error',
+                style: TextStyle(color: Colors.red),
+              ),
+              content: const Text('Failed to delete image.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    if (interstitialAdManager.isInterstitialAdLoaded()) {
+                      interstitialAdManager.showInterstitialAd();
+                    }
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      });
+    } finally {
+      setState(() {
+        _isDeleting = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('Image Details'),
       ),
@@ -286,19 +488,21 @@ class ImageDetailsPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ZoomableImage(imageUrl: imageUrl),
+                        builder: (context) =>
+                            ZoomableImage(imageUrl: widget.imageUrl),
                       ),
                     );
                   },
                   child: Hero(
-                    tag: imageUrl, // Unique tag for the Hero widget
+                    tag: widget.imageUrl, // Unique tag for the Hero widget
                     child: InteractiveViewer(
-                      boundaryMargin: const EdgeInsets.all(20.0), // Adjust this margin as needed
+                      boundaryMargin: const EdgeInsets.all(
+                          20.0), // Adjust this margin as needed
                       minScale: 1.0,
                       maxScale: 4.0, // Adjust the maximum zoom level as needed
                       scaleEnabled: true,
                       child: Image.network(
-                        imageUrl,
+                        widget.imageUrl,
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -306,19 +510,31 @@ class ImageDetailsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16.0),
                 Text(
-                  imageName,
+                  widget.imageName,
                   style: const TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.normal,
                   ),
                 ),
                 const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () => _deleteImage(context),
-                  child: const Text(
-                    'Delete',
-                    style: TextStyle(color: Colors.red),
-                  ),
+                _isDeleting
+                    ? const CircularProgressIndicator() // Show a loading indicator while deleting
+                    : ElevatedButton(
+                        onPressed: () =>{
+                           if (interstitialAdManager.isInterstitialAdLoaded()) {
+                           interstitialAdManager.showInterstitialAd(),
+                           _deleteImage(context),
+                             },
+                             _deleteImage(context),
+                        },
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                const AdBannerWidget(),
+                const SizedBox(
+                  height: 10,
                 ),
               ],
             ),
@@ -351,7 +567,8 @@ class ZoomableImage extends StatelessWidget {
           child: Hero(
             tag: imageUrl, // Use the same tag as in ImageDetailsPage
             child: InteractiveViewer(
-              boundaryMargin: EdgeInsets.all(20.0), // Adjust this margin as needed
+              boundaryMargin:
+                  const EdgeInsets.all(20.0), // Adjust this margin as needed
               minScale: 1.0,
               maxScale: 4.0, // Adjust the maximum zoom level as needed
               scaleEnabled: true,
@@ -366,4 +583,3 @@ class ZoomableImage extends StatelessWidget {
     );
   }
 }
-

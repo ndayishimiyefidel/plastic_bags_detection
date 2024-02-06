@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen>
   void navigateuser() async {
     preferences = await SharedPreferences.getInstance();
     currentuserid = preferences.getString("uid");
-    userRole = preferences.getString("role");
+    userRole = preferences.getString("userRole");
 
 
     final user = FirebaseAuth.instance.currentUser;
@@ -43,6 +43,7 @@ class _SplashScreenState extends State<SplashScreen>
       Route route = MaterialPageRoute(
           builder: (c) => HomeScreen(
                 currentuserid: preferences.getString("uid").toString(),
+                userRole: userRole.toString(),
               ));
               setState(() {
                 Navigator.pushReplacement(context, route);
@@ -65,6 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
       navigateRoute: isAlreadyLoggedIn
           ? HomeScreen(
               currentuserid: currentuserid.toString(),
+              userRole: userRole.toString(),
             )
           : const WelcomeScreen(),
       duration: 5500,

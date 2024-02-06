@@ -4,7 +4,7 @@ description: A new Flutter project.
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+4
+version: 1.0.0+5
 
 environment:
   sdk: '>=2.19.0 <3.0.0'
@@ -19,11 +19,11 @@ dependencies:
   url_launcher: ^6.1.14
   cached_network_image: ^3.2.2
   cloud_firestore: ^4.4.4
-  form_builder_file_picker: ^2.3.0
+  form_builder_file_picker: ^4.0.0
   firebase_auth: ^4.0.2
   shared_preferences: ^2.0.15
   image_network: ^2.5.2
-  image_picker: ^0.8.6
+  image_picker: ^1.0.4
   firebase_storage: ^11.0.6
   splash_screen_view: ^3.0.0
   geolocator: ^10.0.0

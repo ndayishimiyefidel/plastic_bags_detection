@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:plastic_bags_detection/screen/home_screen.dart';
 class AboutUsScreen extends StatelessWidget {
-  const AboutUsScreen({super.key});
-
+  const AboutUsScreen({super.key}); 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +15,7 @@ class AboutUsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Welcome to Aquaplast!',
+              'Welcome to Waste Detection in Lake Kivu!',
               style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
@@ -22,7 +23,7 @@ class AboutUsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
             const Text(
-              'Discover the world of Aquaplast, your ultimate destination for high-quality plastic products.',
+              'Discover waste in lake kivu',
             ),
             const SizedBox(height: 16.0),
             const Text(
@@ -42,11 +43,11 @@ class AboutUsScreen extends StatelessWidget {
               // style: TextStyle(fontSize: 16.0),
             ),
             ElevatedButton(
-              child: const Text('Go to Another Screen'),
+              child: const Text('Go Home'),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AnotherScreen()),
+                  MaterialPageRoute(builder: (context) => HomeScreen(currentuserid: FirebaseAuth.instance.currentUser!.uid,userRole: "User",)),
                 );
               },
             ),

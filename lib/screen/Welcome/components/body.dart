@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:plastic_bags_detection/widgets/banner_widget.dart';
+import 'package:plastic_bags_detection/widgets/reward_video_ad.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../utils/constants.dart';
@@ -10,16 +12,18 @@ class Body extends StatefulWidget {
   const Body({super.key});
 
   @override
-  _BodyState createState() => _BodyState();
+  State createState() => _BodyState();
 }
 
 class _BodyState extends State<Body> {
   late SharedPreferences preferences;
+  RewardVideoAd rewardVideoAd=RewardVideoAd();
 
   @override
   void initState() {
     super.initState();
     //isSignedIn();
+    rewardVideoAd.loadRewardAd();
   }
 
   loginNavigator() {
@@ -27,7 +31,7 @@ class _BodyState extends State<Body> {
       context,
       MaterialPageRoute(
         builder: (context) {
-          return LoginScreen();
+          return const LoginScreen();
         },
       ),
     );
@@ -38,7 +42,7 @@ class _BodyState extends State<Body> {
       context,
       MaterialPageRoute(
         builder: (context) {
-          return SignUpScreen();
+          return const SignUpScreen();
         },
       ),
     );
@@ -56,7 +60,7 @@ class _BodyState extends State<Body> {
             Padding(
               padding: const EdgeInsets.only(left: 15, right: 15),
               child: Text(
-                "WELCOME TO WASTE DETECTION IN WATER BODIES",
+                "WELCOME TO WASTE DETECTION IN LAKE kIVU",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -97,7 +101,12 @@ class _BodyState extends State<Body> {
                   style:
                       ElevatedButton.styleFrom(backgroundColor: kPrimaryColor),
                   onPressed: () {
+                    if(rewardVideoAd.isRewardVideoAdLoaded()){
+                      rewardVideoAd.showRewardAd();
+                      loginNavigator();
+                    }
                     loginNavigator();
+
                   },
                   child: const Text(
                     "GET STARTED",
@@ -110,6 +119,8 @@ class _BodyState extends State<Body> {
                 ),
               ),
             ),
+            const SizedBox(height: 10,),
+             const AdBannerWidget(),
           ],
         ),
       ),

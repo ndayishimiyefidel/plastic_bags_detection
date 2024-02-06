@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:plastic_bags_detection/widgets/banner_widget.dart';
+import 'package:plastic_bags_detection/widgets/interestial_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../components/text_field_container.dart';
 import '../../../utils/constants.dart';
@@ -32,11 +34,16 @@ class _SignUpState extends State<SignUp> {
   bool isloading = false;
   late bool _passwordVisible;
   final userRole = "User";
+  InterstitialAdManager interstitialAdManager = InterstitialAdManager();
 
   @override
   void initState() {
     super.initState();
     _passwordVisible = false;
+     interstitialAdManager.loadInterstitialAd();
+    if (interstitialAdManager.isInterstitialAdLoaded()) {
+      interstitialAdManager.startInterstitialTimer(2);
+    }
   }
 
   void _registerUser() async {
@@ -77,6 +84,7 @@ class _SignUpState extends State<SignUp> {
             "email": firebaseUser!.email,
             "name": name.toString().trim(),
             "phone": phoneNumber.trim(),
+            "userRole": "User",
             "password": password.trim(),
             "photoUrl": defaultPhotoUrl,
             "createdAt": DateTime.now().millisecondsSinceEpoch.toString(),
@@ -88,6 +96,7 @@ class _SignUpState extends State<SignUp> {
           await preferences.setString("photo", defaultPhotoUrl);
           await preferences.setString("phone", phoneNumber.trim());
           await preferences.setString("email", currentuser.email.toString());
+           await preferences.setString("UserRole", "User");
         } else {
           //get user detail for current user
           await preferences.setString("uid", documents[0]["uid"]);
@@ -95,6 +104,7 @@ class _SignUpState extends State<SignUp> {
           await preferences.setString("photo", documents[0]["photoUrl"]);
           await preferences.setString("phone", documents[0]["phone"]);
           await preferences.setString("email", documents[0]["email"]);
+          await preferences.setString("UserRole", documents[0]["userRole"]);
           setState(() {
             isloading = false;
           });
@@ -310,6 +320,10 @@ class _SignUpState extends State<SignUp> {
                       style: ElevatedButton.styleFrom(
                           backgroundColor: kPrimaryColor),
                       onPressed: () {
+                          if (interstitialAdManager.isInterstitialAdLoaded()) {
+                        interstitialAdManager.showInterstitialAd();
+                          _registerUser();
+                      }
                         _registerUser();
                       },
                       child: const Text(
@@ -340,7 +354,7 @@ class _SignUpState extends State<SignUp> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return LoginScreen();
+                              return const LoginScreen();
                             },
                           ),
                         );
@@ -356,6 +370,10 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(height: size.height * 0.1),
                   ],
                 ),
+                      SizedBox(
+                height: size.height * 0.1,
+              ),
+             const AdBannerWidget(),
               ]),
         ),
       ),
