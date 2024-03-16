@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:plastic_bags_detection/widgets/banner_widget.dart';
-import 'package:plastic_bags_detection/widgets/interestial_ads.dart';
+import 'package:smart_rice_analyser/widgets/banner_widget.dart';
+import 'package:smart_rice_analyser/widgets/interestial_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../components/text_field_container.dart';
@@ -65,8 +65,11 @@ class _SignInState extends State<SignIn> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              const SizedBox(
+                height: 20,
+              ),
               Text(
-                "WELCOME TO WASTE DETECTION IN LAKE KIVU",
+                "WELCOME SMART RICE ANALYSER",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -260,7 +263,7 @@ class _SignInState extends State<SignIn> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return SignUpScreen();
+                            return const SignUpScreen();
                           },
                         ),
                       );
@@ -304,11 +307,10 @@ class _SignInState extends State<SignIn> {
                   style: TextStyle(fontSize: 16, color: Colors.blueAccent),
                 ),
               ),
-             
               SizedBox(
                 height: size.height * 0.1,
               ),
-             const AdBannerWidget(),
+              const AdBannerWidget(),
             ],
           ),
         ),
@@ -363,7 +365,8 @@ class _SignInState extends State<SignIn> {
               "photo", datasnapshot.data()!["photoUrl"]);
           await preferences.setString("email", datasnapshot.data()!["email"]);
           await preferences.setString("phone", datasnapshot.data()!["phone"]);
-          await preferences.setString("userRole", datasnapshot.data()!["userRole"]);
+          await preferences.setString(
+              "userRole", datasnapshot.data()!["userRole"]);
 
           setState(() {
             isloading = false;
@@ -371,7 +374,7 @@ class _SignInState extends State<SignIn> {
           Route route = MaterialPageRoute(
               builder: (c) => HomeScreen(
                     currentuserid: user!.uid,
-                    userRole:datasnapshot.data()!["userRole"],
+                    userRole: datasnapshot.data()!["userRole"],
                   ));
           setState(() {
             Navigator.push(context, route);

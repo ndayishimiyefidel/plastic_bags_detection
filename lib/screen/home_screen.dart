@@ -3,9 +3,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:plastic_bags_detection/widgets/banner_widget.dart';
-import 'package:plastic_bags_detection/widgets/main_drawer.dart';
-import 'package:plastic_bags_detection/widgets/reward_video_ad.dart';
+import 'package:smart_rice_analyser/widgets/banner_widget.dart';
+import 'package:smart_rice_analyser/widgets/main_drawer.dart';
+import 'package:smart_rice_analyser/widgets/reward_video_ad.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../enume/user_state.dart';
@@ -17,7 +17,9 @@ class HomeScreen extends StatefulWidget {
   final String currentuserid;
   final String userRole;
 
-  const HomeScreen({Key? key, required this.currentuserid, required this.userRole}) : super(key: key);
+  const HomeScreen(
+      {Key? key, required this.currentuserid, required this.userRole})
+      : super(key: key);
 
   @override
   State createState() =>
@@ -30,9 +32,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   String name = "";
   String email = "";
   String phone = "";
-  String userRole="";
+  String userRole = "";
 
-  
   late SharedPreferences preferences;
 
   getCurrUserData() async {
@@ -41,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       name = preferences.getString("name")!;
       email = preferences.getString("email")!;
       phone = preferences.getString("phone")!;
-      userRole=widget.userRole.toString();
+      userRole = widget.userRole.toString();
     });
   }
 
@@ -52,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       UserStateMethods().setUserState(
         userId: currentuserid,
-        userState: UserState.Online,
+        userState: UserState.online,
       );
     });
 
@@ -73,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         currentuserid != null
             ? UserStateMethods().setUserState(
                 userId: currentuserid,
-                userState: UserState.Online,
+                userState: UserState.online,
               )
             : print("Resumed State");
         break;
@@ -81,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         currentuserid != null
             ? UserStateMethods().setUserState(
                 userId: currentuserid,
-                userState: UserState.Offline,
+                userState: UserState.offline,
               )
             : print("Inactive State");
         break;
@@ -89,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         currentuserid != null
             ? UserStateMethods().setUserState(
                 userId: currentuserid,
-                userState: UserState.Waiting,
+                userState: UserState.waiting,
               )
             : print("Paused State");
         break;
@@ -97,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         currentuserid != null
             ? UserStateMethods().setUserState(
                 userId: currentuserid,
-                userState: UserState.Offline,
+                userState: UserState.offline,
               )
             : print("Detached State");
         break;
@@ -124,16 +125,16 @@ class MyStatefulWidget extends StatefulWidget {
   final String userRole;
   const MyStatefulWidget({
     Key? key,
-    required this.name, required this.userRole,
+    required this.name,
+    required this.userRole,
   }) : super(key: key);
 
   @override
- State createState() => _MyStatefulWidgetState();
+  State createState() => _MyStatefulWidgetState();
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -172,73 +173,89 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-            Text(
+              const SizedBox(height: 20),
+              Text(
                 'You are welcome, ${widget.name} to ${widget.userRole}',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-               const AdBannerWidget(),
-              const SizedBox(height: 60),
+              const AdBannerWidget(),
               Image.asset(
-                'assets/plastic.jpg', // Replace with your own image asset
-                width: 150,
-                height: 150,
+                'assets/rice-analyser.png',
+                width: 300,
+                height: 250,
               ),
-              const SizedBox(height: 25),
               const Text(
-                'WASTE DETECTION IN LAKE KIVU',
+                'SMART RICE ANALYSER',
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.blueGrey,
                   letterSpacing: 2,
                 ),
               ),
               const SizedBox(height: 30.0),
               const ListTile(
                 leading: Icon(Icons.camera_alt),
-                title: Text('Capture Images'),
-                subtitle:
-                    Text('Use the camera to capture images for detection'),
+                title: Text(
+                  'Capture Images',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                    'Use the camera to capture rice grain images for analysis'),
               ),
               const ListTile(
                 leading: Icon(Icons.image),
-                title: Text('Select Images'),
-                subtitle: Text('Choose images from the gallery for detection'),
+                title: Text(
+                  'Select Images',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                    'Choose rice grain images from the gallery for analysis'),
               ),
               const ListTile(
                 leading: Icon(Icons.cloud_upload),
-                title: Text('Store Results'),
-                subtitle:
-                    Text('Save detection results in the cloud for analysis'),
+                title: Text(
+                  'Store Results',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                    'Save analyzed results of rice grain in the cloud for further analysis'),
               ),
               const ListTile(
                 leading: Icon(Icons.search),
-                title: Text('Detect Plastic Bags'),
+                title: Text(
+                  'Analyze Rice Grain',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 subtitle: Text(
-                    'Analyze images to identify the presence of plastic bags'),
+                    'Analyze rice grain images to identify quality and impurities'),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   // Handle button press to navigate to the next screen
-                  if(rewardVideoAd.isRewardVideoAdLoaded()){
+                  if (rewardVideoAd.isRewardVideoAdLoaded()) {
                     rewardVideoAd.showRewardAd();
-                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const Home();
-                  }));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const Home();
+                    }));
                   }
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const Home();
                   }));
                 },
-                child: const Text('GET STARTED'),
+                child: const Text(
+                  'GET STARTED',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
-             const AdBannerWidget(),
-               const SizedBox(
+              const AdBannerWidget(),
+              const SizedBox(
                 height: 10,
               ),
             ],
@@ -247,7 +264,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
     );
   }
-   RewardVideoAd rewardVideoAd= RewardVideoAd();
+
+  RewardVideoAd rewardVideoAd = RewardVideoAd();
 
   @override
   void initState() {

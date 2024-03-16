@@ -10,6 +10,7 @@ class AuthService {
   //create user
   Future createUser({email, password}) async {
     try {
+      // ignore: unused_local_variable
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {

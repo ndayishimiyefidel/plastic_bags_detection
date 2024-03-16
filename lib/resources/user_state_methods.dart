@@ -10,9 +10,7 @@ import '../utils/utils.dart';
 class UserStateMethods {
   late SharedPreferences preferences;
 
-  void setUserState(
-      {required String userId,
-      required UserState userState}) {
+  void setUserState({required String userId, required UserState userState}) {
     int stateNum = Utils.stateToNum(userState);
     FirebaseFirestore.instance.collection("Users").doc(userId).update({
       "state": stateNum,
@@ -26,12 +24,13 @@ class UserStateMethods {
     preferences = await SharedPreferences.getInstance();
     setUserState(
         userId: preferences.getString("uid").toString(),
-        userState: UserState.Offline);
+        userState: UserState.offline);
     await FirebaseAuth.instance.signOut();
     await preferences.clear();
 
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
         (route) => false);
   }
 }

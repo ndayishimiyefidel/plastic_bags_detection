@@ -41,15 +41,15 @@ class _BouncingState extends State<Bouncing>
     _scale = 1 - _controller.value;
     return Listener(
       onPointerDown: (PointerDownEvent event) {
-        if (widget.onPress != null) {
-          _controller.forward();
-        }
+        _controller.forward();
       },
+      //  if (widget.onPress != null) {
+      //     _controller.reverse();
+      //     widget.onPress();
+      //   }
       onPointerUp: (PointerUpEvent event) {
-        if (widget.onPress != null) {
-          _controller.reverse();
-          widget.onPress();
-        }
+        _controller.reverse();
+        widget.onPress();
       },
       child: Transform.scale(
         scale: _scale,

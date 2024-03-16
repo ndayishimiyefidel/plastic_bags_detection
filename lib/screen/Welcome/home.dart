@@ -7,7 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:plastic_bags_detection/widgets/interestial_ads.dart';
+import 'package:smart_rice_analyser/widgets/interestial_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite/tflite.dart';
 import '../../utils/constants.dart';
@@ -97,8 +97,8 @@ class _HomeState extends State<Home> {
     Tflite.close();
     String res;
     res = (await Tflite.loadModel(
-        model: "assets/files/model_waste_detection.tflite",
-        labels: "assets/files/newlabels.txt"))!;
+        model: "assets/files/model_rice_analyser.tflite",
+        labels: "assets/files/labels.txt"))!;
     if (kDebugMode) {
       print("Models loading status: $res");
     }
@@ -130,7 +130,7 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future<void> _detectPlastic() async {
+  Future<void> _analyzeRiceGrain() async {
     setState(() {
       _isUploading = true;
     });
@@ -162,6 +162,7 @@ class _HomeState extends State<Home> {
     });
 
     // Save image details to Cloud Firestore
+    // ignore: unused_local_variable
     DocumentReference resultRef =
         await FirebaseFirestore.instance.collection('detectedResult').add({
       'userId': userId, // Save the user ID along with the image details
@@ -243,7 +244,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Images Detection",
+          "Analyse Rice Grain",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.normal,
@@ -273,7 +274,7 @@ class _HomeState extends State<Home> {
             children: [
               const SizedBox(height: 30.0),
               const Text(
-                'SELECT AN IMAGE',
+                'SELECT AN IMAGE OF RICE GRAIN',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -281,7 +282,7 @@ class _HomeState extends State<Home> {
               ),
               const SizedBox(height: 16.0),
               const Text(
-                'To get started, click on the "Select Image" button to choose an image from your gallery or click on the "Capture Image" button to take a new photo using your device\'s camera. Once the image is selected or captured, the system will process it and provide you with the result of whether the image contains plastic bags or not.',
+                'To get started, click on the "Select Image" button to choose an image of rice grain from your gallery or click on the "Capture Image" button to take a new photo using your device\'s camera. Once the image is selected or captured, the system will process it and provide you with the result based on color, length, and size analysis to identify the type of rice grain.',
                 style: TextStyle(fontSize: 14, color: Colors.black38),
                 textAlign: TextAlign.start,
               ),
@@ -311,7 +312,7 @@ class _HomeState extends State<Home> {
               TextButton.icon(
                 onPressed: () => _pickImage(ImageSource.gallery),
                 icon: const Icon(Icons.photo_library),
-                label: const Text('Pick Image from Gallery'),
+                label: const Text('Select Image from Gallery'),
               ),
               TextButton.icon(
                 onPressed: () => _pickImage(ImageSource.camera),
@@ -322,12 +323,12 @@ class _HomeState extends State<Home> {
               Center(
                 child: ElevatedButton(
                   onPressed: _imageFile != null && !_isUploading
-                      ? _detectPlastic
+                      ? _analyzeRiceGrain
                       : null,
                   child: _isUploading
                       ? const CircularProgressIndicator()
                       : const Text(
-                          'Detect Plastic',
+                          'Analyze Rice Grain',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w400,
@@ -353,7 +354,7 @@ class LocationDisclosureDialog extends StatelessWidget {
     return AlertDialog(
       title: const Text('Location Access Required'),
       content: const Text(
-        'Waste Detection App needs access to your location to know where the waste located that can used in reporting for place with high concentrations of waste.',
+        'Smart Rice Analyser App needs access to your location.',
       ),
       actions: [
         TextButton(

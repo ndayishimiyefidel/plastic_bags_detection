@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -49,23 +46,30 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBgXWDeMT6yar3wMmV2hb478nIoquShGEw',
+    appId: '1:612907817291:web:19647cb2c634d0ff36f0ce',
+    messagingSenderId: '612907817291',
+    projectId: 'smartanalyser-3b4b0',
+    authDomain: 'smartanalyser-3b4b0.firebaseapp.com',
+    storageBucket: 'smartanalyser-3b4b0.appspot.com',
+    measurementId: 'G-T0XKSVB10M',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDl3Y84y40UuxlDSBLUyzRDeZAM2oJnpSs',
-    appId: '1:259416750507:android:0833a31ff1dfa96a6dbaee',
-    messagingSenderId: '259416750507',
-    projectId: 'ulrick-plastic-detection',
-    databaseURL: 'https://ulrick-plastic-detection-default-rtdb.firebaseio.com',
-    storageBucket: 'ulrick-plastic-detection.appspot.com',
+    apiKey: 'AIzaSyDwU29HtGxZL25gU6CKHMTN4W3nu7mhzhg',
+    appId: '1:612907817291:android:f78f45351be6eca336f0ce',
+    messagingSenderId: '612907817291',
+    projectId: 'smartanalyser-3b4b0',
+    storageBucket: 'smartanalyser-3b4b0.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD2kzzizozlahfHNIQ8wC_yfK2V__xdKkg',
-    appId: '1:259416750507:ios:73ad5f7f8f1e1f6c6dbaee',
-    messagingSenderId: '259416750507',
-    projectId: 'ulrick-plastic-detection',
-    databaseURL: 'https://ulrick-plastic-detection-default-rtdb.firebaseio.com',
-    storageBucket: 'ulrick-plastic-detection.appspot.com',
-    iosClientId: '259416750507-1l44f8b6u0sncd8j9ppgmquu6uhhbdas.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDLw-_xT82JHgytbIPg5MS4myl0eaGntVA',
+    appId: '1:612907817291:ios:53a795f7e14b577c36f0ce',
+    messagingSenderId: '612907817291',
+    projectId: 'smartanalyser-3b4b0',
+    storageBucket: 'smartanalyser-3b4b0.appspot.com',
     iosBundleId: 'com.example.plasticBagsDetection',
   );
 }

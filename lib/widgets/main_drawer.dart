@@ -2,10 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:plastic_bags_detection/screen/Welcome/detected_images.dart';
-import 'package:plastic_bags_detection/screen/accounts/account_settings_page.dart';
+import 'package:smart_rice_analyser/screen/Welcome/detected_images.dart';
+import 'package:smart_rice_analyser/screen/accounts/account_settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../resources/user_state_methods.dart';
 import '../screen/Welcome/about_us.dart';
 import '../screen/Welcome/home.dart';
@@ -21,7 +20,7 @@ class MainDrawer extends StatefulWidget {
 
 class _MainDrawerState extends State<MainDrawer> {
   FirebaseAuth auth = FirebaseAuth.instance;
- String? currentuserid;
+  String? currentuserid;
   String? userRole;
   late SharedPreferences preferences;
 
@@ -33,12 +32,12 @@ class _MainDrawerState extends State<MainDrawer> {
 
   void navigateuser() async {
     preferences = await SharedPreferences.getInstance();
-   setState(() {
+    setState(() {
       currentuserid = preferences.getString("uid");
-    userRole = preferences.getString("userRole");
-   });
-
+      userRole = preferences.getString("userRole");
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,9 +53,9 @@ class _MainDrawerState extends State<MainDrawer> {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => HomeScreen(
-                        currentuserid: FirebaseAuth.instance.currentUser!.uid,
-                        userRole: userRole.toString(),
-                        ),
+                      currentuserid: FirebaseAuth.instance.currentUser!.uid,
+                      userRole: userRole.toString(),
+                    ),
                   ),
                 );
               });
@@ -84,7 +83,9 @@ class _MainDrawerState extends State<MainDrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => DetectedImagesPage(userRole: userRole.toString(),),
+                    builder: (BuildContext context) => DetectedImagesPage(
+                      userRole: userRole.toString(),
+                    ),
                   ),
                 );
               });
@@ -100,7 +101,7 @@ class _MainDrawerState extends State<MainDrawer> {
               bottom: 5,
             ),
             title: const Text(
-              "Detected Image",
+              "Analyzed Rice",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
@@ -128,7 +129,7 @@ class _MainDrawerState extends State<MainDrawer> {
               bottom: 5,
             ),
             title: const Text(
-              "Detect Image",
+              "Analyse Rice",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.devopsengineer.plastic_bags_detection">
+    package="com.devopsengineer.smart_rice_analyser">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
    <application
-        android:label="plastic_bags_detection"
+        android:label="Smart Analyser"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
           <meta-data

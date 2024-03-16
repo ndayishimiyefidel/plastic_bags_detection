@@ -1,5 +1,5 @@
 enum UserState {
-  Offline,
-  Online,
-  Waiting,
+  offline,
+  online,
+  waiting,
 }

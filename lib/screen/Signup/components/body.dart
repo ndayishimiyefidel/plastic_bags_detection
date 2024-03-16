@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:plastic_bags_detection/widgets/banner_widget.dart';
-import 'package:plastic_bags_detection/widgets/interestial_ads.dart';
+import 'package:smart_rice_analyser/widgets/banner_widget.dart';
+import 'package:smart_rice_analyser/widgets/interestial_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../components/text_field_container.dart';
 import '../../../utils/constants.dart';
@@ -40,91 +40,86 @@ class _SignUpState extends State<SignUp> {
   void initState() {
     super.initState();
     _passwordVisible = false;
-     interstitialAdManager.loadInterstitialAd();
+    interstitialAdManager.loadInterstitialAd();
     if (interstitialAdManager.isInterstitialAdLoaded()) {
       interstitialAdManager.startInterstitialTimer(2);
     }
   }
 
   void _registerUser() async {
-    //get device id
     if (_formkey.currentState!.validate()) {
       setState(() {
         isloading = true;
       });
-      preferences = await SharedPreferences.getInstance();
-      var firebaseUser = FirebaseAuth.instance.currentUser;
-      await _auth
-          .createUserWithEmailAndPassword(
-              email: emailAddress.toString().trim(),
-              password: password.toString().trim())
-          .then((auth) async {
-        firebaseUser = auth.user;
-      }).catchError((err) {
-        setState(() {
-          isloading = false;
-        });
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(err.message)));
-      });
 
-      if (firebaseUser != null) {
-        final QuerySnapshot result = await FirebaseFirestore.instance
-            .collection("Users")
-            .where("uid", isEqualTo: firebaseUser!.uid)
-            .get();
+      try {
+        // Creating user with email and password
+        final UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: emailAddress.toString().trim(),
+          password: password.toString().trim(),
+        );
 
-        final List<DocumentSnapshot> documents = result.docs;
-        if (documents.isEmpty) {
-          FirebaseFirestore.instance
+        // Accessing the user object
+        final User? firebaseUser = userCredential.user;
+
+        if (firebaseUser != null) {
+          // Check if user exists in Firestore
+          final QuerySnapshot result = await FirebaseFirestore.instance
               .collection("Users")
-              .doc(firebaseUser!.uid)
-              .set({
-            "uid": firebaseUser!.uid,
-            "email": firebaseUser!.email,
-            "name": name.toString().trim(),
-            "phone": phoneNumber.trim(),
-            "userRole": "User",
-            "password": password.trim(),
-            "photoUrl": defaultPhotoUrl,
-            "createdAt": DateTime.now().millisecondsSinceEpoch.toString(),
-            "state": 1,
-          });
-          final currentuser = firebaseUser;
-          await preferences.setString("uid", currentuser!.uid);
-          await preferences.setString("name", name.toString().trim());
-          await preferences.setString("photo", defaultPhotoUrl);
-          await preferences.setString("phone", phoneNumber.trim());
-          await preferences.setString("email", currentuser.email.toString());
-           await preferences.setString("UserRole", "User");
-        } else {
-          //get user detail for current user
-          await preferences.setString("uid", documents[0]["uid"]);
-          await preferences.setString("name", documents[0]["name"]);
-          await preferences.setString("photo", documents[0]["photoUrl"]);
-          await preferences.setString("phone", documents[0]["phone"]);
-          await preferences.setString("email", documents[0]["email"]);
-          await preferences.setString("UserRole", documents[0]["userRole"]);
-          setState(() {
-            isloading = false;
-          });
-          Fluttertoast.showToast(
-              msg:
-                  "Account with this credentials is already created or this device is already in use");
-        }
+              .where("uid", isEqualTo: firebaseUser.uid)
+              .get();
 
+          final List<DocumentSnapshot> documents = result.docs;
+
+          if (documents.isEmpty) {
+            // Add user details to Firestore if not already present
+            await FirebaseFirestore.instance
+                .collection("Users")
+                .doc(firebaseUser.uid)
+                .set({
+              "uid": firebaseUser.uid,
+              "email": firebaseUser.email,
+              "name": name.toString().trim(),
+              "phone": phoneNumber.trim(),
+              "userRole": "User",
+              "password": password
+                  .trim(), // Note: Storing passwords in plaintext is not recommended
+              "photoUrl": defaultPhotoUrl,
+              "createdAt": DateTime.now().millisecondsSinceEpoch.toString(),
+              "state": 1,
+            });
+
+            // Save user details in SharedPreferences
+            final SharedPreferences preferences =
+                await SharedPreferences.getInstance();
+            await preferences.setString("uid", firebaseUser.uid);
+            await preferences.setString("name", name.toString().trim());
+            await preferences.setString("photo", defaultPhotoUrl);
+            await preferences.setString("phone", phoneNumber.trim());
+            await preferences.setString("email", firebaseUser.email!);
+            await preferences.setString("UserRole", "User");
+          }
+
+          // Navigate to LoginScreen after registration
+          setState(() {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (c) => const LoginScreen()));
+          });
+        } else {
+          // Handle registration failure
+          Fluttertoast.showToast(msg: "Sign up Failed");
+        }
+      } catch (error) {
+        // Handle errors
+        if (kDebugMode) {
+          print('Error registering user: $error');
+        }
         setState(() {
           isloading = false;
         });
-        Route route = MaterialPageRoute(builder: (c) => const LoginScreen());
-        setState(() {
-        Navigator.push(context, route);
-        });
-      } else {
-        setState(() {
-          isloading = false;
-        });
-        Fluttertoast.showToast(msg: "Sign up Failed");
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Registration failed: $error")));
       }
     }
   }
@@ -320,10 +315,10 @@ class _SignUpState extends State<SignUp> {
                       style: ElevatedButton.styleFrom(
                           backgroundColor: kPrimaryColor),
                       onPressed: () {
-                          if (interstitialAdManager.isInterstitialAdLoaded()) {
-                        interstitialAdManager.showInterstitialAd();
+                        if (interstitialAdManager.isInterstitialAdLoaded()) {
+                          interstitialAdManager.showInterstitialAd();
                           _registerUser();
-                      }
+                        }
                         _registerUser();
                       },
                       child: const Text(
@@ -370,10 +365,10 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(height: size.height * 0.1),
                   ],
                 ),
-                      SizedBox(
-                height: size.height * 0.1,
-              ),
-             const AdBannerWidget(),
+                SizedBox(
+                  height: size.height * 0.1,
+                ),
+                const AdBannerWidget(),
               ]),
         ),
       ),

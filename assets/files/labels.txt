@@ -1,5 +1,6 @@
-plastics
-underwater garbage
-person
-other
-trees on water
+0 pakistan
+1 red gold
+2 Pishori Rice
+3 broken rice
+4 person
+5 unclassfied

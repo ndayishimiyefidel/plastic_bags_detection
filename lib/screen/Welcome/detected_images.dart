@@ -3,9 +3,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:plastic_bags_detection/widgets/banner_widget.dart';
-import 'package:plastic_bags_detection/widgets/interestial_ads.dart';
-import 'package:plastic_bags_detection/widgets/reward_video_ad.dart';
+import 'package:smart_rice_analyser/screen/Welcome/home.dart';
+import 'package:smart_rice_analyser/widgets/banner_widget.dart';
+import 'package:smart_rice_analyser/widgets/interestial_ads.dart';
+import 'package:smart_rice_analyser/widgets/reward_video_ad.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/constants.dart';
@@ -13,10 +15,11 @@ import '../../utils/constants.dart';
 class DetectedImagesPage extends StatefulWidget {
   final String userRole;
 
-  const DetectedImagesPage({Key? key, required this.userRole}) : super(key: key);
+  const DetectedImagesPage({Key? key, required this.userRole})
+      : super(key: key);
 
   @override
- State createState() => _DetectedImagesPageState();
+  State createState() => _DetectedImagesPageState();
 }
 
 class _DetectedImagesPageState extends State<DetectedImagesPage> {
@@ -24,75 +27,91 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
   late String userId;
   late RewardVideoAd rewardVideoAd;
 
+  late SharedPreferences preferences;
+
+  String? currentuserid;
+  String? userRole, name, email, phone;
+
   @override
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser!;
     userId = user.uid;
     rewardVideoAd = RewardVideoAd();
+    getCurrentUser();
   }
 
-Widget buildLabelWidget(String label) {
-  switch (label) {
-    case "plastics":
-      return Column(
-        children: [
-          const SizedBox(height: 8.0),
-          Text(
-            "This is : $label",
-            style: const TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.red,
+  void getCurrentUser() async {
+    preferences = await SharedPreferences.getInstance();
+    setState(() {
+      currentuserid = preferences.getString("uid");
+      userRole = preferences.getString("userRole");
+      name = preferences.getString("name");
+      email = preferences.getString("email");
+      phone = preferences.getString("phone");
+    });
+  }
+
+  Widget buildLabelWidget(String label) {
+    switch (label) {
+      case "plastics":
+        return Column(
+          children: [
+            const SizedBox(height: 8.0),
+            Text(
+              "This is : $label",
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.red,
+              ),
             ),
-          ),
-        ],
-      );
-    case "person":
-      return Column(
-        children: [
-          const SizedBox(height: 8.0),
-          Text(
-            "This  $label,not a plastic",
-            style: const TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.green,
+          ],
+        );
+      case "person":
+        return Column(
+          children: [
+            const SizedBox(height: 8.0),
+            Text(
+              "This  $label,not a plastic",
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
             ),
-          ),
-        ],
-      );
-    case "other":
-      return const Column(
-        children: [
-        SizedBox(height: 8.0),
-          Text(
-            "This is unclassfied objects",
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
+          ],
+        );
+      case "other":
+        return const Column(
+          children: [
+            SizedBox(height: 8.0),
+            Text(
+              "This is unclassfied objects",
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
             ),
-          ),
-        ],
-      );
-    case "underwater garbage":
-      return Column(
-        children: [
-          const SizedBox(height: 8.0),
-          Text(
-            "This is $label, something floating on water",
-            style: const TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.orange,
+          ],
+        );
+      case "underwater garbage":
+        return Column(
+          children: [
+            const SizedBox(height: 8.0),
+            Text(
+              "This is $label, something floating on water",
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.orange,
+              ),
             ),
-          ),
-        ],
-      );
-    case "water":
-      return Column(
-        children: [
+          ],
+        );
+      case "water":
+        return Column(children: [
           const SizedBox(height: 8.0),
           Text(
             "This is $label, not plastics",
@@ -102,11 +121,9 @@ Widget buildLabelWidget(String label) {
               color: Colors.teal,
             ),
           ),
-        ]
-      );
-case "trees on water":
-      return Column(
-        children: [
+        ]);
+      case "trees on water":
+        return Column(children: [
           const SizedBox(height: 8.0),
           Text(
             "This is : $label, no plastics",
@@ -116,26 +133,22 @@ case "trees on water":
               color: Colors.grey,
             ),
           ),
-        ]
-      );
-    default:
-      return const SizedBox.shrink(); // Hide the widget for unknown labels
+        ]);
+      default:
+        return const SizedBox.shrink(); // Hide the widget for unknown labels
+    }
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Detected Images",
+          "Analyzed Rice Grain",
           style: TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.normal,
-            letterSpacing: 1.25,
-            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
         leading: IconButton(
@@ -153,18 +166,20 @@ case "trees on water":
         elevation: 0.0,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: widget.userRole!="Admin"? FirebaseFirestore.instance
-            .collection('detectedResult')
-            .where('userId', isEqualTo: userId)
-            .orderBy('createdAt', descending: true)
-            .snapshots():FirebaseFirestore.instance
-            .collection('detectedResult')
-            .orderBy('createdAt', descending: true)
-            .snapshots(),
+        stream: widget.userRole != "Admin"
+            ? FirebaseFirestore.instance
+                .collection('detectedResult')
+                .where('userId', isEqualTo: userId)
+                .orderBy('createdAt', descending: true)
+                .snapshots()
+            : FirebaseFirestore.instance
+                .collection('detectedResult')
+                .orderBy('createdAt', descending: true)
+                .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
-              child: Text('Error retrieving images'),
+              child: Text('Error retrieving analysed image rice'),
             );
           }
 
@@ -175,8 +190,22 @@ case "trees on water":
           }
 
           if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text('No detected images found'),
+            return Center(
+              child: Column(
+                children: [
+                  const Text('No analysed rice grain imagesfound'),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Home(),
+                          ),
+                        );
+                      },
+                      child: const Text("Analyse Rice"))
+                ],
+              ),
             );
           }
 
@@ -197,14 +226,14 @@ case "trees on water":
               String? phone = data['phone'];
               String confidencePercentage =
                   (confidence * 100).toStringAsFixed(2);
-          double? latitude = data['latitude'];
-          double? longitude = data['longitude'];
-          String realCity='';
-          if(city!=null && city.isNotEmpty && city!=""){
-            realCity="in $city";
-          }
+              double? latitude = data['latitude'];
+              double? longitude = data['longitude'];
+              String realCity = '';
+              if (city != null && city.isNotEmpty && city != "") {
+                realCity = "in $city";
+              }
 
-           bool hasLocation = latitude != null && longitude != null;
+              bool hasLocation = latitude != null && longitude != null;
 
               return GestureDetector(
                 onTap: () {
@@ -244,40 +273,49 @@ case "trees on water":
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Names: $name",
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                          const SizedBox(height: 8.0),
-                        Text(
-                          "Telephone: $phone",
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
+                        userRole != "User"
+                            ? Text(
+                                "Names: $name",
+                                style: const TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              )
+                            : const SizedBox(),
                         const SizedBox(height: 8.0),
-                        Text(
-                          "Email: $email",
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
+                        userRole != "User"
+                            ? Text(
+                                "Telephone: $phone",
+                                style: const TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              )
+                            : const SizedBox(),
+                        const SizedBox(height: 8.0),
+                        userRole != "User"
+                            ? Text(
+                                "Email: $email",
+                                style: const TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              )
+                            : const SizedBox(),
                         const SizedBox(height: 8.0),
                         GestureDetector(
                           child: InteractiveViewer(
-                            child: Image.network(
-                              imageUrl,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 150.0,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: 150.0,
+                              ),
                             ),
                           ),
                           onLongPress: () {
@@ -285,20 +323,11 @@ case "trees on water":
                           },
                         ),
                         const SizedBox(height: 8.0),
-                        Text(
-                          imageName,
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black45,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              "Confidence Level:",
+                              "Rice Quality:",
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -318,48 +347,50 @@ case "trees on water":
                           ],
                         ),
                         buildLabelWidget(label),
-
                         country != null
                             ? Text(
-                              "Detected at  $country $realCity",
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w300,
-                                color: isPlasticDetected
-                                    ? Colors.green
-                                    : Colors.red,
+                                "Analysed at  $country $realCity",
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w300,
+                                  color: isPlasticDetected
+                                      ? Colors.green
+                                      : Colors.red,
+                                ),
+                              )
+                            : const SizedBox(),
+                        if (hasLocation) // Check if latitude and longitude exist
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  openLocationOnMap(latitude, longitude);
+                                },
+                                child: const Text(
+                                  "To view location map",
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.grey),
+                                ),
                               ),
-                            ):const SizedBox(),
-                             if (hasLocation) // Check if latitude and longitude exist
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-        GestureDetector(
-          onTap: () {
-          openLocationOnMap(latitude, longitude);
-          },
-          child: const Text(
-            "To view location map",
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.w300,
-              color: Colors.grey
-            ),
-          ),
-        ),
-        const SizedBox(width: 10,),
-          GestureDetector(
-            onTap: () {
-              openLocationOnMap(latitude, longitude);
-            },
-            child: const Icon(
-              Icons.location_on, // Add your preferred location icon
-              color: Colors.blue,
-              size: 30.0,
-            ),
-          ),
-        ],
-      ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  openLocationOnMap(latitude, longitude);
+                                },
+                                child: const Icon(
+                                  Icons
+                                      .location_on, // Add your preferred location icon
+                                  color: Colors.blue,
+                                  size: 30.0,
+                                ),
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -371,17 +402,18 @@ case "trees on water":
       ),
     );
   }
-  void openLocationOnMap(double latitude, double longitude) async {
-  final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
 
-  if (await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
-  } else {
-    throw 'Could not open the map with the provided coordinates: $latitude, $longitude';
+  void openLocationOnMap(double latitude, double longitude) async {
+    final url =
+        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not open the map with the provided coordinates: $latitude, $longitude';
+    }
   }
 }
-}
-
 
 class ImageDetailsPage extends StatefulWidget {
   final String imageUrl;
@@ -418,7 +450,6 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
         _isDeleting = true;
       });
 
-
       await FirebaseFirestore.instance
           .collection('detectedResult')
           .doc(widget.documentId)
@@ -429,7 +460,7 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
         // Show a success message using a SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Image deleted successfully'),
+            content: Text('data deleted successfully'),
             duration: Duration(seconds: 2),
           ),
         );
@@ -445,7 +476,7 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
                 'Error',
                 style: TextStyle(color: Colors.red),
               ),
-              content: const Text('Failed to delete image.'),
+              content: const Text('Failed to delete data.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -520,12 +551,13 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
                 _isDeleting
                     ? const CircularProgressIndicator() // Show a loading indicator while deleting
                     : ElevatedButton(
-                        onPressed: () =>{
-                           if (interstitialAdManager.isInterstitialAdLoaded()) {
-                           interstitialAdManager.showInterstitialAd(),
-                           _deleteImage(context),
-                             },
-                             _deleteImage(context),
+                        onPressed: () => {
+                          if (interstitialAdManager.isInterstitialAdLoaded())
+                            {
+                              interstitialAdManager.showInterstitialAd(),
+                              _deleteImage(context),
+                            },
+                          _deleteImage(context),
                         },
                         child: const Text(
                           'Delete',

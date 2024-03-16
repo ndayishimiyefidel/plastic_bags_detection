@@ -32,10 +32,8 @@ class _SplashScreenState extends State<SplashScreen>
     currentuserid = preferences.getString("uid");
     userRole = preferences.getString("userRole");
 
-
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-
       setState(() {
         isAlreadyLoggedIn = true;
       });
@@ -45,17 +43,16 @@ class _SplashScreenState extends State<SplashScreen>
                 currentuserid: preferences.getString("uid").toString(),
                 userRole: userRole.toString(),
               ));
-              setState(() {
-                Navigator.pushReplacement(context, route);
-              });
+      setState(() {
+        Navigator.pushReplacement(context, route);
+      });
     } else {
       setState(() {
         isAlreadyLoggedIn = false;
       });
       Route route = MaterialPageRoute(builder: (c) => const WelcomeScreen());
       setState(() {
-              Navigator.pushReplacement(context, route);
-
+        Navigator.pushReplacement(context, route);
       });
     }
   }
@@ -70,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen>
             )
           : const WelcomeScreen(),
       duration: 5500,
-      text: "PLASTIC BAGS DETECTION APP",
+      text: "Rice Smart Analyser App",
       textType: TextType.ColorizeAnimationText,
       textStyle: const TextStyle(fontSize: 40.0, fontFamily: 'Courgette'),
       colors: const [

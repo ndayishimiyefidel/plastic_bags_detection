@@ -1,4 +1,4 @@
-package com.devopsengineer.plastic_bags_detection;
+package com.devopsengineer.smart_rice_analyser;
 
 import io.flutter.embedding.android.FlutterActivity;
 

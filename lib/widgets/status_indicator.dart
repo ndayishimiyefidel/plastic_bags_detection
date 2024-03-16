@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 import '../enume/user_state.dart';
@@ -17,9 +18,9 @@ class StatusIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     getColor(int state) {
       switch (Utils.numToState(state)) {
-        case UserState.Offline:
+        case UserState.offline:
           return Colors.red;
-        case UserState.Online:
+        case UserState.online:
           return Colors.green;
         default:
           return Colors.orange;
@@ -29,6 +30,7 @@ class StatusIndicator extends StatelessWidget {
     return StreamBuilder(
       stream: userStateMethods.getUserStream(uid: uid),
       builder: (context, snapshot) {
+        // ignore: prefer_typing_uninitialized_variables
         var user;
         if (!snapshot.hasData) {
           return SizedBox(

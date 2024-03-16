@@ -1,4 +1,4 @@
-# plastic_bags_detection
+# smart_rice_analyser
 
 A new Flutter project.
 

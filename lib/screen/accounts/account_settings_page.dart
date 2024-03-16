@@ -8,11 +8,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:plastic_bags_detection/widgets/main_drawer.dart';
-import 'package:plastic_bags_detection/widgets/progress_widget.dart';
+import 'package:smart_rice_analyser/widgets/main_drawer.dart';
+import 'package:smart_rice_analyser/widgets/progress_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../resources/user_state_methods.dart';
 import '../../utils/constants.dart';
+
 class UserSettings extends StatelessWidget {
   UserSettings({super.key});
 
@@ -76,6 +77,7 @@ class SettingsScreen extends StatefulWidget {
   @override
   State createState() => SettingsScreenState();
 }
+
 class SettingsScreenState extends State<SettingsScreen> {
   late SharedPreferences preferences;
   late TextEditingController nameTextEditingController;
@@ -267,8 +269,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                             GestureDetector(
                               onTap: getImage,
                               child: const Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 150.0, right: 120.0),
+                                  padding:
+                                      EdgeInsets.only(top: 150.0, right: 120.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[

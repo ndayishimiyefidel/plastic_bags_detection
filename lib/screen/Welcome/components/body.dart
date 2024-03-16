@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:plastic_bags_detection/widgets/banner_widget.dart';
-import 'package:plastic_bags_detection/widgets/reward_video_ad.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../utils/constants.dart';
 import '../../Login/login_screen.dart';
 import '../../Signup/signup_screen.dart';
 import 'background.dart';
 
 class Body extends StatefulWidget {
-  const Body({super.key});
+  const Body({Key? key}) : super(key: key);
 
   @override
   State createState() => _BodyState();
@@ -17,13 +14,10 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   late SharedPreferences preferences;
-  RewardVideoAd rewardVideoAd=RewardVideoAd();
 
   @override
   void initState() {
     super.initState();
-    //isSignedIn();
-    rewardVideoAd.loadRewardAd();
   }
 
   loginNavigator() {
@@ -51,46 +45,50 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    // This size provide us total height and width of our screen
+    // This size provides the total height and width of our screen
     return Background(
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            SizedBox(height: size.height * 0.1),
             Padding(
               padding: const EdgeInsets.only(left: 15, right: 15),
               child: Text(
-                "WELCOME TO WASTE DETECTION IN LAKE kIVU",
+                "WELCOME TO SMART RICE ANALYZER",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Theme.of(context).primaryColor),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Theme.of(context).primaryColor,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
-                "This system is designed to detect whether an image contains plastic bags or not. You can either choose an image from your device's gallery or capture a new image using the camera. The system will then analyze the image using a convolutional neural network (CNN) model trained on a dataset of images containing plastic bags and images without plastic bags.",
+                "This system is designed to analyze rice grains based on color, length, and size to identify their type. You can either choose an image from your device's gallery or capture a new image using the camera. The system will then analyze the image using advanced algorithms and provide you with the type of rice grain detected or analysed.",
                 style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14,
-                    color: Colors.black45),
+                  fontWeight: FontWeight.normal,
+                  fontSize: 16,
+                  wordSpacing: 5,
+                  color: Colors.black45,
+                ),
                 textAlign: TextAlign.start,
               ),
             ),
             SizedBox(height: size.height * 0.05),
-            // SvgPicture.asset(
-            //   "assets/icons/chat.svg",
-            //   height: size.height * 0.45,
-            // ),
-            Image.asset(
-              'assets/back1.jpeg', // Replace with your own image asset
-              height: size.height * 0.45,
-              width: size.width * 0.8,
-              fit: BoxFit.fill,
+            ClipRRect(
+              borderRadius:
+                  BorderRadius.circular(10), // Adjust the radius as needed
+              child: Image.asset(
+                'assets/ricehome.jpg', // Replace with your own image asset
+                height: size.height * 0.45,
+                width: size.width * 0.95,
+                fit: BoxFit.fill,
+              ),
             ),
-            SizedBox(height: size.height * 0.02),
+            SizedBox(height: size.height * 0.04),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
               width: size.width * 0.5,
@@ -98,29 +96,26 @@ class _BodyState extends State<Body> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5),
                 child: ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: kPrimaryColor),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kPrimaryColor,
+                  ),
                   onPressed: () {
-                    if(rewardVideoAd.isRewardVideoAdLoaded()){
-                      rewardVideoAd.showRewardAd();
-                      loginNavigator();
-                    }
+                    // Handle button press action here
                     loginNavigator();
-
                   },
                   child: const Text(
                     "GET STARTED",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.normal,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 10,),
-             const AdBannerWidget(),
+            const SizedBox(height: 10),
+            // Add any additional widgets here
           ],
         ),
       ),

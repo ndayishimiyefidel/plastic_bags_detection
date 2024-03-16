@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:plastic_bags_detection/utils/constants.dart';
-import 'package:plastic_bags_detection/utils/utils.dart';
+import 'package:smart_rice_analyser/utils/constants.dart';
+import 'package:smart_rice_analyser/utils/utils.dart';
 import 'firebase_options.dart';
 import 'screen/splash_screen.dart';
 
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Waste detection',
+      title: 'Smart Rice Analyser',
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       scaffoldMessengerKey: messengerKey,
