@@ -62,7 +62,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
 */
   Widget buildLabelWidget(String label) {
     switch (label) {
-      case "pakistan":
+      case "0 pakistan":
         return Column(
           children: [
             const SizedBox(height: 8.0),
@@ -76,7 +76,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "person":
+      case "4 person":
         return Column(
           children: [
             const SizedBox(height: 8.0),
@@ -90,7 +90,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "unclassfied":
+      case "5 unclassfied":
         return const Column(
           children: [
             SizedBox(height: 8.0),
@@ -104,7 +104,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "red gold":
+      case "1 red gold":
         return Column(
           children: [
             const SizedBox(height: 8.0),
@@ -118,7 +118,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "Pishori Rice":
+      case "2 Pishori Rice":
         return Column(children: [
           const SizedBox(height: 8.0),
           Text(
@@ -130,7 +130,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ),
         ]);
-      case "broken rice":
+      case "3 broken rice":
         return Column(children: [
           const SizedBox(height: 8.0),
           Text(
