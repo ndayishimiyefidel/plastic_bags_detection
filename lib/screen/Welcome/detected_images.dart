@@ -52,9 +52,17 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
     });
   }
 
+/*
+0 pakistan
+1 red gold
+2 Pishori Rice
+3 broken rice
+4 person
+5 unclassfied
+*/
   Widget buildLabelWidget(String label) {
     switch (label) {
-      case "plastics":
+      case "pakistan":
         return Column(
           children: [
             const SizedBox(height: 8.0),
@@ -73,7 +81,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
           children: [
             const SizedBox(height: 8.0),
             Text(
-              "This  $label,not a plastic",
+              "This  $label,not a rice",
               style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -82,7 +90,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "other":
+      case "unclassfied":
         return const Column(
           children: [
             SizedBox(height: 8.0),
@@ -96,12 +104,12 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "underwater garbage":
+      case "red gold":
         return Column(
           children: [
             const SizedBox(height: 8.0),
             Text(
-              "This is $label, something floating on water",
+              "This is $label rice",
               style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -110,11 +118,11 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "water":
+      case "Pishori Rice":
         return Column(children: [
           const SizedBox(height: 8.0),
           Text(
-            "This is $label, not plastics",
+            "This is $label",
             style: const TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -122,11 +130,11 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ),
         ]);
-      case "trees on water":
+      case "broken rice":
         return Column(children: [
           const SizedBox(height: 8.0),
           Text(
-            "This is : $label, no plastics",
+            "This is : $label",
             style: const TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -323,29 +331,32 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
                           },
                         ),
                         const SizedBox(height: 8.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "Rice Quality:",
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              '$confidencePercentage %',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w300,
-                                color: isPlasticDetected
-                                    ? Colors.green
-                                    : Colors.red,
-                              ),
-                            ),
-                          ],
-                        ),
+                        (label == "person" || label == "unclassfied")
+                            ? Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Rice Quality:",
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    '$confidencePercentage %',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w300,
+                                      color: isPlasticDetected
+                                          ? Colors.green
+                                          : Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const SizedBox(),
                         buildLabelWidget(label),
                         country != null
                             ? Text(
