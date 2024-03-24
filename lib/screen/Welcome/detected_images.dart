@@ -62,7 +62,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
 */
   Widget buildLabelWidget(String label) {
     switch (label) {
-      case "0 pakistan":
+      case "pakistan":
         return Column(
           children: [
             const SizedBox(height: 8.0),
@@ -76,7 +76,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "4 person":
+      case "person":
         return Column(
           children: [
             const SizedBox(height: 8.0),
@@ -90,7 +90,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "5 unclassfied":
+      case "unclassfied":
         return const Column(
           children: [
             SizedBox(height: 8.0),
@@ -104,7 +104,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "1 red gold":
+      case "red gold":
         return Column(
           children: [
             const SizedBox(height: 8.0),
@@ -118,7 +118,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ],
         );
-      case "2 Pishori Rice":
+      case "Pishori Rice":
         return Column(children: [
           const SizedBox(height: 8.0),
           Text(
@@ -130,7 +130,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
             ),
           ),
         ]);
-      case "3 broken rice":
+      case "broken rice":
         return Column(children: [
           const SizedBox(height: 8.0),
           Text(
@@ -331,7 +331,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
                           },
                         ),
                         const SizedBox(height: 8.0),
-                        (label == "person" || label == "unclassfied")
+                        (label != "person" || label != "unclassfied")
                             ? Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
