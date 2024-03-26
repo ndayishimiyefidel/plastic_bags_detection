@@ -10,6 +10,7 @@ import '../../../widgets/progress_widget.dart';
 import '../../home_screen.dart';
 import '../../Signup/components/background.dart';
 import '../../Signup/signup_screen.dart';
+import '../../reset_password.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -27,7 +28,7 @@ class _SignInState extends State<SignIn> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late bool _passwordVisible;
   bool isloading = false;
- // InterstitialAdManager interstitialAdManager = InterstitialAdManager();
+  // InterstitialAdManager interstitialAdManager = InterstitialAdManager();
 
   String? deviceId;
   bool checkedValue = false;
@@ -190,19 +191,20 @@ class _SignInState extends State<SignIn> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) {
-                        //       return const ForgotScreen();
-                        //     },
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ForgotScreen();
+                            },
+                          ),
+                        );
                       },
                       child: const Text(
                         "Reset it",
                         style: TextStyle(
                           color: Colors.red,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
