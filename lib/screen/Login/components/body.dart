@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:smart_rice_analyser/widgets/banner_widget.dart';
-import 'package:smart_rice_analyser/widgets/interestial_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../components/text_field_container.dart';
@@ -29,7 +27,7 @@ class _SignInState extends State<SignIn> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late bool _passwordVisible;
   bool isloading = false;
-  InterstitialAdManager interstitialAdManager = InterstitialAdManager();
+ // InterstitialAdManager interstitialAdManager = InterstitialAdManager();
 
   String? deviceId;
   bool checkedValue = false;
@@ -38,10 +36,10 @@ class _SignInState extends State<SignIn> {
   void initState() {
     super.initState();
     _passwordVisible = false;
-    interstitialAdManager.loadInterstitialAd();
-    if (interstitialAdManager.isInterstitialAdLoaded()) {
-      interstitialAdManager.startInterstitialTimer(2);
-    }
+    // interstitialAdManager.loadInterstitialAd();
+    // if (interstitialAdManager.isInterstitialAdLoaded()) {
+    //   interstitialAdManager.startInterstitialTimer(2);
+    // }
   }
 
   Future<void> signupNavigator() async {
@@ -225,10 +223,10 @@ class _SignInState extends State<SignIn> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: kPrimaryColor),
                     onPressed: () {
-                      if (interstitialAdManager.isInterstitialAdLoaded()) {
-                        interstitialAdManager.showInterstitialAd();
-                        loginUser();
-                      }
+                      // if (interstitialAdManager.isInterstitialAdLoaded()) {
+                      //   interstitialAdManager.showInterstitialAd();
+                      //   loginUser();
+                      // }
                       loginUser();
                     },
                     child: const Text(
@@ -310,7 +308,7 @@ class _SignInState extends State<SignIn> {
               SizedBox(
                 height: size.height * 0.1,
               ),
-              const AdBannerWidget(),
+              //const AdBannerWidget(),
             ],
           ),
         ),

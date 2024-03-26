@@ -3,9 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:smart_rice_analyser/widgets/banner_widget.dart';
 import 'package:smart_rice_analyser/widgets/main_drawer.dart';
-import 'package:smart_rice_analyser/widgets/reward_video_ad.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../enume/user_state.dart';
@@ -181,7 +179,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const AdBannerWidget(),
+             // const AdBannerWidget(),
               Image.asset(
                 'assets/rice-analyser.png',
                 width: 300,
@@ -238,13 +236,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               ElevatedButton(
                 onPressed: () {
                   // Handle button press to navigate to the next screen
-                  if (rewardVideoAd.isRewardVideoAdLoaded()) {
-                    rewardVideoAd.showRewardAd();
+                  // if (rewardVideoAd.isRewardVideoAdLoaded()) {
+                  //   rewardVideoAd.showRewardAd();
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return const Home();
                     }));
-                  }
+                 // }
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const Home();
                   }));
@@ -254,7 +252,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              const AdBannerWidget(),
+            //  const AdBannerWidget(),
               const SizedBox(
                 height: 10,
               ),
@@ -265,11 +263,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 
-  RewardVideoAd rewardVideoAd = RewardVideoAd();
+//  RewardVideoAd rewardVideoAd = RewardVideoAd();
 
   @override
   void initState() {
     super.initState();
-    rewardVideoAd.loadRewardAd();
+   // rewardVideoAd.loadRewardAd();
   }
 }

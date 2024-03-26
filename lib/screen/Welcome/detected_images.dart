@@ -4,9 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_rice_analyser/screen/Welcome/home.dart';
-import 'package:smart_rice_analyser/widgets/banner_widget.dart';
-import 'package:smart_rice_analyser/widgets/interestial_ads.dart';
-import 'package:smart_rice_analyser/widgets/reward_video_ad.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,7 +22,7 @@ class DetectedImagesPage extends StatefulWidget {
 class _DetectedImagesPageState extends State<DetectedImagesPage> {
   late User user;
   late String userId;
-  late RewardVideoAd rewardVideoAd;
+  //late RewardVideoAd rewardVideoAd;
 
   late SharedPreferences preferences;
 
@@ -37,7 +34,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
     super.initState();
     user = FirebaseAuth.instance.currentUser!;
     userId = user.uid;
-    rewardVideoAd = RewardVideoAd();
+    // rewardVideoAd = RewardVideoAd();
     getCurrentUser();
   }
 
@@ -245,22 +242,22 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
 
               return GestureDetector(
                 onTap: () {
-                  rewardVideoAd.loadRewardAd();
+                  // rewardVideoAd.loadRewardAd();
 
-                  if (rewardVideoAd.isRewardVideoAdLoaded()) {
-                    rewardVideoAd.showRewardAd();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ImageDetailsPage(
-                          imageUrl: imageUrl,
-                          imageName: imageName,
-                          isPlasticDetected: isPlasticDetected,
-                          documentId: document.id,
-                        ),
+                  // if (rewardVideoAd.isRewardVideoAdLoaded()) {
+                  //   rewardVideoAd.showRewardAd();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ImageDetailsPage(
+                        imageUrl: imageUrl,
+                        imageName: imageName,
+                        isPlasticDetected: isPlasticDetected,
+                        documentId: document.id,
                       ),
-                    );
-                  }
+                    ),
+                  );
+                  // }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -331,8 +328,9 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
                           },
                         ),
                         const SizedBox(height: 8.0),
-                        (label != "person" || label != "unclassfied")
-                            ? Row(
+                        (label == "person" || label == "unclassfied")
+                            ? const SizedBox()
+                            : Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
@@ -355,8 +353,7 @@ class _DetectedImagesPageState extends State<DetectedImagesPage> {
                                     ),
                                   ),
                                 ],
-                              )
-                            : const SizedBox(),
+                              ),
                         buildLabelWidget(label),
                         country != null
                             ? Text(
@@ -447,12 +444,12 @@ class ImageDetailsPage extends StatefulWidget {
 class _ImageDetailsPageState extends State<ImageDetailsPage> {
   bool _isDeleting = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  InterstitialAdManager interstitialAdManager = InterstitialAdManager();
+  // InterstitialAdManager interstitialAdManager = InterstitialAdManager();
 
   @override
   void initState() {
     super.initState();
-    interstitialAdManager.loadInterstitialAd(); //load inter
+    // interstitialAdManager.loadInterstitialAd(); //load inter
   }
 
   Future<void> _deleteImage(BuildContext context) async {
@@ -492,9 +489,9 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    if (interstitialAdManager.isInterstitialAdLoaded()) {
-                      interstitialAdManager.showInterstitialAd();
-                    }
+                    // if (interstitialAdManager.isInterstitialAdLoaded()) {
+                    //   interstitialAdManager.showInterstitialAd();
+                    // }
                   },
                   child: const Text('OK'),
                 ),
@@ -563,11 +560,11 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
                     ? const CircularProgressIndicator() // Show a loading indicator while deleting
                     : ElevatedButton(
                         onPressed: () => {
-                          if (interstitialAdManager.isInterstitialAdLoaded())
-                            {
-                              interstitialAdManager.showInterstitialAd(),
-                              _deleteImage(context),
-                            },
+                          // if (interstitialAdManager.isInterstitialAdLoaded())
+                          //   {
+                          //     interstitialAdManager.showInterstitialAd(),
+                          //     _deleteImage(context),
+                          //   },
                           _deleteImage(context),
                         },
                         child: const Text(
@@ -575,7 +572,7 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
-                const AdBannerWidget(),
+                // const AdBannerWidget(),
                 const SizedBox(
                   height: 10,
                 ),

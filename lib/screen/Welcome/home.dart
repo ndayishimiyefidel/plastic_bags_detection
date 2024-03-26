@@ -7,7 +7,6 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:smart_rice_analyser/widgets/interestial_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite/tflite.dart';
 import '../../utils/constants.dart';
@@ -50,7 +49,7 @@ class _HomeState extends State<Home> {
   String? state, streetName;
   double? latitudeValue;
   double? longitudeValue;
-  InterstitialAdManager interstitialAdManager = InterstitialAdManager();
+  //InterstitialAdManager interstitialAdManager = InterstitialAdManager();
   // Function to fetch the current location and address
   Future<void> getCurrentLocation() async {
     try {
@@ -106,12 +105,22 @@ class _HomeState extends State<Home> {
 
 //pieck imaage
   Future<void> _pickImage(ImageSource source) async {
-    final pickedImage = await ImagePicker().pickImage(source: source);
-    if (pickedImage != null) {
-      setState(() {
-        _imageFile = File(pickedImage.path);
-        _isPlasticDetected = false; // Reset the plastic detection status
-      });
+    try {
+      final pickedImage = await ImagePicker().pickImage(source: source);
+      if (pickedImage != null) {
+        setState(() {
+          _imageFile = File(pickedImage.path);
+          _isPlasticDetected = false; // Reset the plastic detection status
+        });
+      } else {
+        if (kDebugMode) {
+          print('No image selected.');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error picking image: $e');
+      }
     }
   }
 
@@ -134,9 +143,9 @@ class _HomeState extends State<Home> {
     setState(() {
       _isUploading = true;
     });
-    if (interstitialAdManager.isInterstitialAdLoaded()) {
-      interstitialAdManager.showInterstitialAd();
-    }
+    // if (interstitialAdManager.isInterstitialAdLoaded()) {
+    //   interstitialAdManager.showInterstitialAd();
+    // }
 
     // Delay before classifying the image (for demonstration purposes)
     await Future.delayed(const Duration(seconds: 6));
@@ -233,7 +242,7 @@ class _HomeState extends State<Home> {
     super.initState();
     getCurrentUser();
     loadModel();
-    interstitialAdManager.loadInterstitialAd(); //load inter
+    // interstitialAdManager.loadInterstitialAd(); //load inter
     Future.delayed(Duration.zero, () {
       showLocationDisclosureDialog();
     });
